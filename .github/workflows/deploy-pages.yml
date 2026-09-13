@@ -1,0 +1,40 @@
+name: Publish Tea Collection display
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Tea Collection files
+        uses: actions/checkout@v4
+      - name: Reassemble the approved package
+        run: |
+          cat sugarplum-tea-collection.zip.part1 sugarplum-tea-collection.zip.part2 > tea-collection.zip
+          mkdir _site
+          unzip -q tea-collection.zip -d _site
+          rm -rf _site/.openai
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Tea Collection
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Publish preview files
+        id: deployment
+        uses: actions/deploy-pages@v4
