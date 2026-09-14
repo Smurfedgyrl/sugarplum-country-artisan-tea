@@ -21,14 +21,17 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Get Tea Collection files
+      - name: Check out repository
         uses: actions/checkout@v4
-      - name: Reassemble the approved package
+      - name: Build preview files
         run: |
           cat sugarplum-tea-collection.zip.part1 sugarplum-tea-collection.zip.part2 > tea-collection.zip
           mkdir _site
           unzip -q tea-collection.zip -d _site
           rm -rf _site/.openai
+          cp script.js _site/script.js
+          mkdir -p _site/assets
+          cp assets/green-header-clean.jpg _site/assets/green-header-clean.jpg
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Tea Collection
