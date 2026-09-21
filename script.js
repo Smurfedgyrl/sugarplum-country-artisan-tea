@@ -472,6 +472,7 @@ function teaDetailCard(tea) {
   const allPricesReady = tea.sizes.every(size => size.price && String(size.price).toUpperCase() !== "TBD");
   const availableRelated = tea.related.filter(name => teas.some(item => item.name.toLowerCase() === name.toLowerCase()));
   return `<article class="comparison-card" data-open-tea="${tea.slug}" style="--tea-card-background:url('assets/${seriesCardArtwork[tea.series] || "victorian-tea-postcard-bg.webp"}')">
+    <div class="drag-handle" aria-label="Drag this tea card">Drag to compare</div>
     <button class="close-tea" type="button" data-close-tea="${tea.slug}" aria-label="Close ${tea.name}">×</button>
     <div class="detail-layout">
       ${teaImage(tea, true)}
@@ -547,8 +548,7 @@ function openTea(slug, updateHash = true) {
 }
 
 function loadHash() {
-  const routeParam = new URLSearchParams(location.search).get("route");
-  const hash = location.hash.slice(1) || routeParam || "";
+  const hash = location.hash.slice(1);
   if (hash.startsWith("tea/")) {
     const tea = teas.find(item => item.slug === hash.slice(4));
     if (tea) chooseSeries(tea.series, false);
@@ -623,7 +623,8 @@ detail.addEventListener("click", event => {
 let dragState = null;
 detail.addEventListener("pointerdown", event => {
   const card = event.target.closest(".comparison-card");
-  if (!card || event.target.closest("button, a, select, input") || event.clientY - card.getBoundingClientRect().top > 64) return;
+  const handle = event.target.closest(".drag-handle");
+  if (!card || !handle) return;
   const rect = card.getBoundingClientRect();
   dragState = { card, dx: event.clientX - rect.left, dy: event.clientY - rect.top };
   card.setPointerCapture(event.pointerId);
