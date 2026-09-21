@@ -12,7 +12,7 @@ jobs:
           fetch-depth: 0
       - name: Restore only the four wreath header files
         run: |
-          git checkout 68def1f661d1a8a96ff613500691f79a -- assets/green-header-clean.jpg assets/green-header-functional-search.png sugarplum-tea-collection.zip.part1 sugarplum-tea-collection.zip.part2
+          git checkout 68def1f661d1a8a96ff613500691f7941c920a45 -- assets/green-header-clean.jpg assets/green-header-functional-search.png sugarplum-tea-collection.zip.part1 sugarplum-tea-collection.zip.part2
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Revert wreath wording changes only"
