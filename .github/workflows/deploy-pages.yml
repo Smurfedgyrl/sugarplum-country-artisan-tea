@@ -30,6 +30,7 @@ jobs:
           unzip -q tea-collection.zip -d _site
           rm -rf _site/.openai
           cp script.js _site/script.js
+          cp styles.css _site/styles.css
           mkdir -p _site/assets
           cp assets/green-header-clean.jpg _site/assets/green-header-clean.jpg
           cp assets/green-header-functional-search.png _site/assets/green-header-functional-search.png
