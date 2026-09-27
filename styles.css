@@ -15,7 +15,15 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 html, body { background: transparent; }
-body { margin: 0; color: var(--ink); }
+body {
+  margin: 0;
+  color: var(--ink);
+  background-image: url("assets/sugarplum-sitewide-background-approved.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
 body[data-series="black"] { --plum:#4b2928; --moss:#485744; --line:#b68a50; }
 body[data-series="oolong"] { --plum:#6b3f25; --moss:#657044; --line:#c49350; }
 body[data-series="white"] { --plum:#66525f; --moss:#73806b; --line:#c3a87b; }
