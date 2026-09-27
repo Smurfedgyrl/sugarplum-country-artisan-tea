@@ -769,3 +769,10 @@ window.addEventListener("message", event => {
 
 renderSeriesNavigation();
 loadHash();
+
+
+// Keep the Tea app header hidden when it is embedded inside the Wix page.
+if (new URLSearchParams(window.location.search).get("embed") === "wix") {
+  const embeddedHeader = document.querySelector(".brand-header");
+  if (embeddedHeader) embeddedHeader.style.display = "none";
+}
