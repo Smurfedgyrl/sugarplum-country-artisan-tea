@@ -42,7 +42,7 @@ button, input, select { font: inherit; }
 button { cursor: pointer; }
 [hidden] { display: none !important; }
 
-.brand-header { position: relative; z-index: 5; background: var(--hunter-deep); border-bottom: 2px solid var(--line); }
+.brand-header { display: none !important; position: relative; z-index: 5; background: var(--hunter-deep); border-bottom: 2px solid var(--line); }
 .brand-header > img { display: block; width: 100%; height: auto; }
 .brand-header nav button { position: absolute; top: 43%; height: 42%; background: transparent; border: 0; border-radius: 8px; }
 .brand-header nav button:focus-visible { outline: 3px solid var(--ivory); outline-offset: -4px; }
