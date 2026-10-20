@@ -972,8 +972,9 @@ detail.addEventListener("pointerup", event => {
   dragState = null;
 });
 dialog.querySelector(".close").addEventListener("click", () => dialog.close());
-document.querySelector("#product-info-modal").addEventListener("click", event => {
-  if (event.target.matches("[data-close-product-info], .product-info-backdrop")) document.querySelector("#product-info-modal").hidden = true;
+const productInfoModal = document.querySelector("#product-info-modal");
+if (productInfoModal) productInfoModal.addEventListener("click", event => {
+  if (event.target.matches("[data-close-product-info], .product-info-backdrop")) productInfoModal.hidden = true;
 });
 comparisonToggle.addEventListener("click", () => {
   const minimized = dialog.classList.toggle("minimized");
