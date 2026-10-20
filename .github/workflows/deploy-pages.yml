@@ -29,10 +29,10 @@ jobs:
           mkdir _site
           unzip -q tea-collection.zip -d _site
           rm -rf _site/.openai
-          cat catalog-data.part*.js > _site/data.js
+          cat catalog-data-b64.part* | base64 --decode > _site/data.js
           cp script.js _site/script.js
           cp styles.css _site/styles.css
-          sed -i 's/data.js?v=[0-9]*/data.js?v=33/' _site/index.html
+          sed -i 's/data.js?v=[0-9]*/data.js?v=34/' _site/index.html
           sed -i 's/script.js?v=[0-9]*/script.js?v=78/' _site/index.html
           sed -i 's/styles.css?v=[0-9]*/styles.css?v=109/' _site/index.html
           mkdir -p _site/assets
