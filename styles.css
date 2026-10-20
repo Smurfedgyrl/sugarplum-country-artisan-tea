@@ -263,9 +263,9 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
 .tea-dialog[open].parked .comparison-card { visibility: hidden; }
 .open-teas-tray { display: none; position: absolute; z-index: 60; width: 162px; padding: 8px 10px; border: 1px solid #b88f4f; border-radius: 5px; color: #fff8e8; background: #214c38; box-shadow: 0 8px 24px rgba(20,15,9,.35); pointer-events: auto; }
 .tea-dialog[open].parked .open-teas-tray { display: block; }
-.open-teas-tray > strong { display: block; font-size: 13px; font-weight: 600; text-align: center; }
+.open-teas-toggle { display: block; width: 100%; padding: 0; border: 0; color: #fff8e8; background: transparent; font-family: inherit; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; }
 .open-teas-tray .comparison-tabs { display: none; flex-direction: column; gap: 5px; margin-top: 8px; }
-.open-teas-tray:hover .comparison-tabs, .open-teas-tray:focus-within .comparison-tabs { display: flex; }
+.open-teas-tray:hover .comparison-tabs, .open-teas-tray:focus-within .comparison-tabs, .open-teas-tray.expanded .comparison-tabs { display: flex; }
 .open-teas-tray .comparison-tabs button { width: 100%; overflow: hidden; padding: 6px 8px; border: 1px solid #d5bd83; color: #4d2a3f; background: #fff8e8; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .tea-dialog[open]::backdrop { display: none; background: transparent; }
 .tea-dialog > .close { position: absolute; top: 8px; right: 10px; z-index: 8; margin: 0; }

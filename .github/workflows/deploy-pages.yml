@@ -34,8 +34,8 @@ jobs:
           cp script.js _site/script.js
           cp styles.css _site/styles.css
           sed -i 's/data.js?v=[0-9]*/data.js?v=34/' _site/index.html
-          sed -i 's/script.js?v=[0-9]*/script.js?v=83/' _site/index.html
-          sed -i 's/styles.css?v=[0-9]*/styles.css?v=112/' _site/index.html
+          sed -i 's/script.js?v=[0-9]*/script.js?v=84/' _site/index.html
+          sed -i 's/styles.css?v=[0-9]*/styles.css?v=113/' _site/index.html
           mkdir -p _site/assets
           cp assets/green-header-clean.jpg _site/assets/green-header-clean.jpg
           cp assets/green-header-functional-search.png _site/assets/green-header-functional-search.png

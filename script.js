@@ -901,7 +901,7 @@ function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
   if (!dialog.open) {
-    detail.innerHTML = `<div class="comparison-grid"></div><div class="open-teas-tray"><strong>Open teas</strong><div class="comparison-tabs" role="tablist" aria-label="Open tea cards"></div></div>`;
+    detail.innerHTML = `<div class="comparison-grid"></div><div class="open-teas-tray"><button class="open-teas-toggle" type="button" aria-expanded="false">Open teas</button><div class="comparison-tabs" role="tablist" aria-label="Open tea cards"></div></div>`;
     dialog.show();
   }
   dialog.classList.remove("parked");
@@ -964,6 +964,13 @@ collectionSeriesGrid.addEventListener("click", event => {
   if (button) chooseSeries(button.dataset.series);
 });
 detail.addEventListener("click", event => {
+  const openTeasToggle = event.target.closest(".open-teas-toggle");
+  if (openTeasToggle) {
+    const tray = openTeasToggle.closest(".open-teas-tray");
+    const expanded = tray.classList.toggle("expanded");
+    openTeasToggle.setAttribute("aria-expanded", String(expanded));
+    return;
+  }
   const productInfo = event.target.closest("[data-open-product-info]");
   if (productInfo) {
     const tea = teas.find(item => item.slug === productInfo.dataset.openProductInfo);
@@ -984,6 +991,7 @@ detail.addEventListener("click", event => {
   const teaTab = event.target.closest("[data-focus-tea]");
   if (teaTab) {
     dialog.classList.remove("parked");
+    teaTab.closest(".open-teas-tray")?.classList.remove("expanded");
     activateTeaCard(teaTab.dataset.focusTea);
     return;
   }
