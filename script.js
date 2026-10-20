@@ -605,6 +605,25 @@ const knownImages = {
 
 let currentSeries = "Green Tea";
 
+const seriesFallbackImages = {
+  "Black Tea": "black-assam-melody-filler.webp",
+  "Green Tea": "citron-green.jpg",
+  "Oolong Tea": "oolong-peach-filler.webp",
+  "White Tea": "white-peach-filler.webp",
+  "Rooibos": "chai-cinnamon-rooibos-chai-filler.webp",
+  "Honeybush": "chai-cinnamon-rooibos-chai-filler.webp",
+  "Herbal Tea": "herbal-lavender-lemon-filler.webp",
+  "Chai": "chai-masala-chai-filler.webp",
+  "Earl Grey": "earl-grey-supreme-filler.webp",
+  "Matcha": "citron-green.jpg",
+  "Pu-Erh Tea": "black-chocolate-filler.webp",
+  "Darjeeling": "darjeeling-casablanca-mint-filler.webp",
+  "Seasonal Exclusives": "black-candy-cane-filler.webp",
+  "Zodiac Collection": "herbal-lavender-lemon-filler.webp",
+  "Decaf Tea": "decaf-earl-grey-filler.webp",
+  "Wellness": "herbal-lavender-lemon-filler.webp"
+};
+
 function showNotice(message) {
   notice.textContent = message;
   notice.classList.add("show");
@@ -619,11 +638,17 @@ function formatPrice(value) {
 
 function teaImage(tea, detailView = false) {
   const className = detailView ? "detail-photo" : "tea-image";
-  const image = detailView && tea.slug === "apricot-green" ? "apricot-green-hero.jpg" : knownImages[tea.slug];
-  if (image) return `<div class="${className}"><img src="assets/${image}" alt="${tea.name} loose-leaf tea" /></div>`;
-  const artwork = seriesArtwork[tea.series] || "green.webp";
-  return `<div class="${className} placeholder series-art-placeholder" role="img" aria-label="${tea.series} botanical collection artwork" style="--placeholder-art:url('assets/series-backgrounds/${artwork}')"></div>`;
+  const fallback = seriesFallbackImages[tea.series] || "herbal-lavender-lemon-filler.webp";
+  const image = detailView && tea.slug === "apricot-green" ? "apricot-green-hero.jpg" : (knownImages[tea.slug] || fallback);
+  return `<div class="${className}"><img src="assets/${image}" data-fallback="assets/${fallback}" alt="${tea.name} loose-leaf tea" /></div>`;
 }
+
+document.addEventListener("error", event => {
+  const image = event.target;
+  if (!(image instanceof HTMLImageElement) || !image.dataset.fallback || image.dataset.fallbackApplied) return;
+  image.dataset.fallbackApplied = "true";
+  image.src = image.dataset.fallback;
+}, true);
 
 function availabilityClass(tea) {
   return tea.availability.toLowerCase().includes("season") ? "seasonal" :
