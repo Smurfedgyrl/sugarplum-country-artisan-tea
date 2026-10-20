@@ -901,7 +901,7 @@ function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
   if (!dialog.open) {
-    detail.innerHTML = `<div class="comparison-grid"></div>`;
+    detail.innerHTML = `<div class="comparison-grid"></div><div class="open-teas-tray"><strong>Open teas</strong><div class="comparison-tabs" role="tablist" aria-label="Open tea cards"></div></div>`;
     dialog.show();
   }
   dialog.classList.remove("parked");
@@ -944,7 +944,14 @@ grid.addEventListener("click", event => {
 
 document.addEventListener("click", event => {
   if (!dialog.open || dialog.classList.contains("parked")) return;
-  if (event.target.closest(".comparison-card, .product-info-modal")) return;
+  if (event.target.closest(".comparison-card, .product-info-modal, .open-teas-tray")) return;
+  const activeCard = detail.querySelector(".comparison-card.active");
+  const tray = detail.querySelector(".open-teas-tray");
+  if (activeCard && tray) {
+    const rect = activeCard.getBoundingClientRect();
+    tray.style.left = `${Math.max(18, rect.right - 180)}px`;
+    tray.style.top = `${Math.max(18, rect.top + 12)}px`;
+  }
   dialog.classList.add("parked");
 }, true);
 
@@ -976,6 +983,7 @@ detail.addEventListener("click", event => {
   }
   const teaTab = event.target.closest("[data-focus-tea]");
   if (teaTab) {
+    dialog.classList.remove("parked");
     activateTeaCard(teaTab.dataset.focusTea);
     return;
   }
