@@ -904,6 +904,7 @@ function openTea(slug, updateHash = true, anchor = null) {
     detail.innerHTML = `<div class="comparison-grid"></div>`;
     dialog.show();
   }
+  dialog.classList.remove("parked");
   dialog.classList.remove("minimized");
   comparisonToggle.textContent = "Minimize";
   comparisonToggle.setAttribute("aria-expanded", "true");
@@ -940,6 +941,13 @@ grid.addEventListener("click", event => {
   const button = event.target.closest("[data-slug]");
   if (button) openTea(button.dataset.slug, true, button);
 });
+
+document.addEventListener("click", event => {
+  if (!dialog.open || dialog.classList.contains("parked")) return;
+  if (event.target.closest(".comparison-card, .product-info-modal")) return;
+  dialog.classList.add("parked");
+}, true);
+
 seriesMenu.addEventListener("click", event => {
   const button = event.target.closest("[data-series]");
   if (button) chooseSeries(button.dataset.series);

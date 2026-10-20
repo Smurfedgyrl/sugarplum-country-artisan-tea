@@ -260,6 +260,7 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
 
 /* Persistent multi-tea comparison workspace. */
 .tea-dialog[open] { position: fixed; inset: 0; z-index: 20; display: block; width: 100vw; max-width: none; height: 100vh; max-height: none; margin: 0; overflow: visible; border: 0; background: transparent; box-shadow: none; pointer-events: none; }
+.tea-dialog[open].parked { visibility: hidden; }
 .tea-dialog[open]::backdrop { display: none; background: transparent; }
 .tea-dialog > .close { position: absolute; top: 8px; right: 10px; z-index: 8; margin: 0; }
 .toggle-comparison { position: absolute; top: 12px; right: 60px; z-index: 8; min-height: 34px; padding: 5px 12px; border: 1px solid #d8c18c; color: #f5eddd; background: transparent; }
