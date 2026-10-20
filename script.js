@@ -1,5 +1,5 @@
 const catalog = window.TEA_CATALOG;
-const teas = catalog.teas;
+const teas = catalog.teas.filter((tea) => tea.catalogVisibility !== "master-only");
 const seriesList = catalog.series;
 const grid = document.querySelector("#tea-grid");
 const search = document.querySelector("#search");
@@ -31,13 +31,15 @@ const seriesDescriptions = {
   "Green Tea": "Fresh, graceful teas ranging from softly floral and fruity to toasted, minty, and dessert-inspired.",
   "Oolong Tea": "Layered, aromatic teas balancing floral lift, smooth body, gentle roast, and lingering sweetness.",
   "White Tea": "Delicate, elegant teas with soft floral, fruit, honeyed, and naturally refreshing notes.",
-  "Rooibos & Honeybush": "Naturally caffeine-free South African infusions with smooth, cozy, fruity, and dessert-like character.",
+  "Rooibos": "Naturally caffeine-free South African red and green rooibos infusions with smooth, cozy, fruity, and dessert-like character.",
+  "Honeybush": "Naturally caffeine-free South African honeybush infusions with mellow body, gentle sweetness, fruit, spice, and dessert-like character.",
   "Herbal Tea": "Colorful caffeine-free botanical blends filled with fruits, flowers, herbs, spice, and comforting flavor.",
   "Chai": "Warmly spiced blends with aromatic depth, cozy sweetness, and satisfying character served hot or iced.",
   "Earl Grey": "Distinctive bergamot teas ranging from timeless classics to creamy, floral, and imaginative interpretations.",
   "Matcha": "Vibrant Japanese-style green tea selections with smooth energy, concentrated flavor, and versatile preparation.",
   "Pu-Erh Tea": "Earthy, deeply rounded teas with smooth body, aged character, and richly layered flavor.",
   "Darjeeling": "Elegant high-grown teas celebrated for their bright aroma, refined body, and distinctive muscatel character.",
+  "Seasonal Exclusives": "Limited-calendar teas released for particular seasons, special harvests, holidays, or rare events. Availability changes throughout the year.",
   "Zodiac Collection": "A whimsical celestial collection pairing each zodiac sign with its own expressive tea blend.",
   "Decaf Tea": "Comforting decaffeinated favorites created for full flavor with significantly less caffeine.",
   "Wellness": "Purposeful botanical blends selected for comforting rituals, balanced flavor, and everyday well-being."
@@ -45,29 +47,62 @@ const seriesDescriptions = {
 
 const themeNames = {
   "Black Tea":"black","Green Tea":"green","Oolong Tea":"oolong","White Tea":"white",
-  "Rooibos & Honeybush":"rooibos","Herbal Tea":"herbal","Chai":"chai","Earl Grey":"earl",
-  "Matcha":"matcha","Pu-Erh Tea":"puerh","Darjeeling":"darjeeling","Zodiac Collection":"zodiac",
+  "Rooibos":"rooibos","Honeybush":"rooibos","Herbal Tea":"herbal","Chai":"chai","Earl Grey":"earl",
+  "Matcha":"matcha","Pu-Erh Tea":"puerh","Darjeeling":"darjeeling","Seasonal Exclusives":"black","Zodiac Collection":"zodiac",
   "Decaf Tea":"decaf","Wellness":"wellness"
 };
 
 const seriesArtwork = {
   "Black Tea":"black.webp","Green Tea":"green.webp","Oolong Tea":"oolong.webp","White Tea":"white.webp",
-  "Rooibos & Honeybush":"rooibos.webp","Herbal Tea":"herbal.webp","Chai":"chai.webp","Earl Grey":"earl.webp",
-  "Matcha":"matcha.webp","Pu-Erh Tea":"puerh.webp","Darjeeling":"darjeeling.webp","Zodiac Collection":"zodiac.webp",
+  "Rooibos":"rooibos.webp","Honeybush":"rooibos.webp","Herbal Tea":"herbal.webp","Chai":"chai.webp","Earl Grey":"earl.webp",
+  "Matcha":"matcha.webp","Pu-Erh Tea":"puerh.webp","Darjeeling":"darjeeling.webp","Seasonal Exclusives":"seasonal-exclusives-v1.png","Zodiac Collection":"zodiac.webp",
   "Decaf Tea":"decaf.webp","Wellness":"wellness.webp"
 };
 
 const seriesCardArtwork = {
   "Black Tea":"victorian-tea-postcard-bg.webp", "Green Tea":"green-tea-postcard-bg.webp",
   "Oolong Tea":"oolong-tea-postcard-bg.webp", "White Tea":"white-tea-postcard-bg.webp",
-  "Rooibos & Honeybush":"rooibos-tea-postcard-bg.webp", "Herbal Tea":"herbal-tea-postcard-bg.webp",
+  "Rooibos":"rooibos-tea-postcard-bg.webp", "Honeybush":"honeybush-tea-postcard-bg-v1.png", "Herbal Tea":"herbal-tea-postcard-bg.webp",
   "Chai":"chai-tea-postcard-bg.webp", "Earl Grey":"earl-grey-postcard-bg.webp",
   "Matcha":"matcha-postcard-bg.webp", "Pu-Erh Tea":"puerh-postcard-bg.webp",
-  "Darjeeling":"darjeeling-postcard-bg.webp", "Zodiac Collection":"zodiac-postcard-bg.webp",
+  "Darjeeling":"darjeeling-postcard-bg.webp", "Seasonal Exclusives":"seasonal-exclusives-postcard-bg-v1.png", "Zodiac Collection":"zodiac-postcard-bg.webp",
   "Decaf Tea":"decaf-postcard-bg.webp", "Wellness":"wellness-postcard-bg.webp"
 };
 
 const knownImages = {
+  "hojicha-chocolate": "metro-green/hojicha-chocolate.webp",
+  "atlantico-lime": "metro-green/atlantico-lime.webp",
+  "blackcurrant-cassis": "metro-green/blackcurrant-cassis.webp",
+  "blue-mango": "metro-green/blue-mango.webp",
+  "blue-suede-shoes": "metro-green/blue-suede-shoes.webp",
+  "bohemian-raspberry": "metro-green/bohemian-raspberry.webp",
+  "caramel-apple-crumble": "metro-green/caramel-apple-crumble.webp",
+  "cinnamon-sibu": "metro-green/cinnamon-sibu.webp",
+  "coconut-dream": "metro-green/coconut-dream.webp",
+  "crime-of-passion": "metro-green/crime-of-passion.webp",
+  "cucumber-melon-green": "metro-green/cucumber-melon-green.webp",
+  "golden-apple-spice": "metro-green/golden-apple-spice.webp",
+  "granny-green-apple": "metro-green/granny-green-apple.webp",
+  "guava-comoros": "metro-green/guava-comoros.webp",
+  "island-earl-grey": "metro-green/island-earl-grey.webp",
+  "key-lime-pie": "metro-green/key-lime-pie.webp",
+  "long-island-strawberry": "metro-green/long-island-strawberry.webp",
+  "sencha-kyoto-cherry-rose": "metro-green/sencha-kyoto-cherry-rose.webp",
+  "shanghai-lychee-jasmine": "metro-green/shanghai-lychee-jasmine.webp",
+  "tamarind-lychee-green": "metro-green/tamarind-lychee-green.webp",
+  "vanilla-pumpkin-swirl": "metro-green/vanilla-pumpkin-swirl.webp",
+  "watermelon-lime": "metro-green/watermelon-lime.webp",
+  "blueberry-green": "metro-green/blueberry-green.webp",
+  "blueberry-pie": "metro-green/blueberry-pie.webp",
+  "cream-earl-grey-green": "metro-green/cream-earl-grey-green.webp",
+  "earl-grey-green": "metro-green/earl-grey-green.webp",
+  "irish-eyes-green-tea": "metro-green/irish-eyes-green-tea.webp",
+  "lemon-green": "metro-green/lemon-green.webp",
+  "maple-green": "metro-green/maple-green.webp",
+  "monk-s-blend-green": "metro-green/monks-blend-green.webp",
+  "pomegranate-hibiscus": "metro-green/pomegranate-hibiscus.webp",
+  "strawberry-green": "metro-green/strawberry-green.webp",
+  "vanilla-bean-dream": "metro-green/vanilla-bean-dream.webp",
   "almond": "adagio-black-refresh/almond-macro.webp",
   "apricot": "adagio-black-refresh/apricot-macro.webp",
   "april-in-paris": "adagio-black-refresh/april-in-paris-macro.webp",
@@ -149,6 +184,15 @@ const knownImages = {
   "maple-creme-oolong": "oolong-maple-creme-filler.webp",
   "peach-oolong": "oolong-peach-filler.webp",
   "vanilla-oolong": "oolong-vanilla-filler.webp",
+  "maple-french-toast-oolong":"oolong-maple-french-toast-filler.webp",
+  "cinnamon-oolong":"oolong-cinnamon-filler.webp",
+  "oolong-goji-berry":"oolong-goji-berry-filler.webp",
+  "oolong-grapefruit-rose":"oolong-grapefruit-rose-filler.webp",
+  "oolong-jadore-mango":"oolong-jadore-mango-filler.webp",
+  "oolong-loire-valley-peach":"oolong-loire-valley-peach-filler.webp",
+  "oolong-royal-empress":"oolong-royal-empress-filler.webp",
+  "oolong-st-james-strawberry":"oolong-st-james-strawberry-filler.webp",
+  "oolong-sweet-watermelon":"oolong-sweet-watermelon-filler.webp",
   "buddhas-dream": "white-buddhas-dream-filler.webp",
   "fuzzy-navel": "white-fuzzy-navel-filler.webp",
   "white-blueberry": "white-blueberry-filler.webp",
@@ -164,6 +208,51 @@ const knownImages = {
   "white-toasted-coconut": "white-toasted-coconut-filler.webp",
   "white-tropics": "white-tropics-filler.webp",
   "almond-cardamom-cake": "rooibos-almond-cardamom-cake-filler.webp",
+  "a-raspberry-in-paris-rooibos": "rooibos-raspberry-in-paris.webp",
+  "almond-amaretto-biscotti-rooibos": "rooibos-almond-amaretto-biscotti.webp",
+  "almond-rocker-rooibos": "rooibos-almond-rocker.webp",
+  "apple-ginger-rooibos": "rooibos-apple-ginger.webp",
+  "baked-apple-rooibos": "rooibos-baked-apple.webp",
+  "banana-muffin-rooibos": "rooibos-banana-muffin.webp",
+  "belgian-chocolate-rooibos": "rooibos-belgian-chocolate.webp",
+  "berry-fields": "rooibos-berry-fields.webp",
+  "blueberry-bang-rooibos": "rooibos-blueberry-bang.png",
+  "bora-bora-mango-rooibos": "rooibos-bora-bora-mango.png",
+  "bourbon-street-vanilla": "rooibos-bourbon-street-vanilla.png",
+  "cape-cod-cranberry-rooibos": "rooibos-cape-cod-cranberry.png",
+  "carrot-cake-rooibos": "rooibos-carrot-cake.png",
+  "cherry-rose-rooibos": "rooibos-cherry-rose.png",
+  "chocolate-mint-rooibos": "rooibos-chocolate-mint.png",
+  "cinnamon-chacha-rooibos": "rooibos-cinnamon-chacha.png",
+  "corsican-pear-spice-rooibos": "rooibos-corsican-pear-spice.png",
+  "cream-earl-grey-rooibos": "rooibos-cream-earl-grey.png",
+  "creme-au-caramel-rooibos": "rooibos-creme-au-caramel.png",
+  "dutch-licorice-rooibos": "rooibos-dutch-licorice.png",
+  "earl-grey-rooibos": "rooibos-earl-grey-metro-approved.png",
+  "florida-orange-rooibos": "rooibos-florida-orange-approved.png",
+  "georgia-peach-rooibos": "rooibos-georgia-peach-approved.png",
+  "gibraltar-black-currant-rooibos": "rooibos-gibraltar-black-currant-approved.png",
+  "ginger-bounce-rooibos": "rooibos-ginger-bounce-approved.png",
+  "godiva-roche-rooibos": "rooibos-godiva-roche-approved.png",
+  "golden-pineapple-chocolate": "rooibos-golden-pineapple-chocolate-approved.png",
+  "hawaiian-colada-rooibos": "rooibos-hawaiian-colada-approved.png",
+  "hunny-rooibos": "rooibos-hunny-approved.png",
+  "le-marche-spice-rooibos": "rooibos-le-marche-spice-approved.png",
+  "lugano-palamisu-rooibos": "rooibos-lugano-palamisu-approved.png",
+  "mocha-rocha-rooibos": "rooibos-mocha-rocha-approved.png",
+  "nutcracker": "rooibos-nutcracker-metro-approved.png",
+  "pecan-pie-rooibos": "rooibos-pecan-pie-approved.png",
+  "provence-rooibos": "rooibos-provence-approved.png",
+  "pumpkin-spice-rooibos": "rooibos-pumpkin-spice-approved.png",
+  "rainbow-rooibos": "rooibos-rainbow-approved.png",
+  "root-beer-rooibos": "rooibos-root-beer-approved.png",
+  "spring-in-place-de-la-madeleine": "rooibos-spring-madeleine-approved.png",
+  "strawberry-tingle-rooibos": "rooibos-strawberry-tingle-approved.png",
+  "sunshine-lemon-rooibos": "rooibos-sunshine-lemon-approved.png",
+  "thai-lemon-ginger-rooibos": "rooibos-thai-lemon-ginger-approved.png",
+  "tuscany-pear-rooibos": "rooibos-tuscany-pear-approved.png",
+  "white-swiss-truffle-rooibos": "rooibos-white-swiss-truffle-approved.png",
+  "winter-palace-marzipan-rooibos": "rooibos-winter-palace-marzipan-approved.png",
   "cranberry-cream": "rooibos-cranberry-cream-filler.webp",
   "green-rooibos": "rooibos-green-rooibos-filler.webp",
   "green-rooibos-blueberry": "rooibos-green-rooibos-blueberry-filler.webp",
@@ -180,6 +269,27 @@ const knownImages = {
   "honeybush-mango": "rooibos-honeybush-mango-filler.webp",
   "honeybush-vanilla": "rooibos-honeybush-vanilla-filler.webp",
   "honeybush-wild-berry": "rooibos-honeybush-wild-berry-filler.webp",
+  "honeybush-peach": "rooibos-honeybush-peach-filler.webp",
+  "raspberry-honeybush": "rooibos-raspberry-honeybush-filler.webp",
+  "malabar-decaf-chai": "chai-malabar-decaf-filler.webp",
+  "burnt-sugar-chai": "chai-burnt-sugar-filler.webp",
+  "maple-chai": "chai-maple-filler.webp",
+  "night-of-the-iguana-chocolate-chai": "chai-night-iguana-filler.webp",
+  "sleepy-hollow-pumpkin-chai": "chai-sleepy-hollow-filler.webp",
+  "vanilla-chai": "chai-vanilla-filler.webp",
+  "genmaicha-chai": "chai-genmaicha-filler.webp",
+  "green-tea-chai": "chai-green-tea-filler.webp",
+  "orchard-fresh-chai": "chai-orchard-fresh-filler.webp",
+  "cinnamon-bun-rooibos-chai": "chai-cinnamon-bun-rooibos-filler.webp",
+  "izmir-chai-spice": "chai-izmir-filler.webp",
+  "roasted-mate-chai": "chai-roasted-mate-filler.webp",
+  "rooibos-masala-chai": "chai-rooibos-masala-filler.webp",
+  "bangalore-rose-chai": "chai-bangalore-rose-filler.webp",
+  "cochin-masala-chai": "chai-cochin-masala-filler.webp",
+  "guarana-chai": "chai-guarana-filler.webp",
+  "indian-spiced-chai": "chai-indian-spiced-filler.webp",
+  "kama-sutra-chai": "chai-kama-sutra-filler.webp",
+  "lemongrass-chai": "chai-lemongrass-filler.webp",
   "krampus-tea": "rooibos-krampus-tea-filler.webp",
   "rooibos": "rooibos-rooibos-filler.webp",
   "rooibos-almond": "rooibos-rooibos-almond-filler.webp",
@@ -273,9 +383,35 @@ const knownImages = {
   "pu-erh-hazelberry": "pu-erh-hazelberry-filler.webp",
   "pu-erh-spice": "pu-erh-spice-filler.webp",
   "pu-erh-tahiti": "pu-erh-tahiti-filler.webp",
+  "chocolate-macaroon-pu-erh": "pu-erh-chocolate-macaroon-filler.webp",
+  "coffee-or-tea-pu-erh": "pu-erh-coffee-or-tea-filler.webp",
+  "cream-earl-grey-pu-erh": "pu-erh-cream-earl-grey-filler.webp",
+  "creme-brulee-pu-erh": "pu-erh-creme-brulee-filler.webp",
+  "ethiopian-mocha-pu-erh": "pu-erh-ethiopian-mocha-filler.webp",
+  "french-vanilla-pu-erh": "pu-erh-french-vanilla-filler.webp",
+  "pumpkin-spice-pu-erh": "pu-erh-pumpkin-spice-filler.webp",
+  "scottish-caramel-pu-erh": "pu-erh-scottish-caramel-filler.webp",
+  "british-earl-white": "white-british-earl-filler.webp",
+  "cloud-forest-rainbow-white": "white-cloud-forest-rainbow-filler.webp",
+  "cream-earl-grey-white": "white-cream-earl-grey-filler.webp",
+  "monks-blend-white": "white-monks-blend-filler.webp",
+  "oasis-mango-white": "white-oasis-mango-filler.webp",
+  "ontario-icewine-white": "white-ontario-icewine-filler.webp",
+  "peach-apricot-white": "white-peach-apricot-filler.webp",
+  "pomegranate-madagascar-white": "white-pomegranate-madagascar-filler.webp",
+  "sakura-cherry-rose-white": "white-sakura-cherry-rose-filler.webp",
+  "tangiers-lemon-white": "white-tangiers-lemon-filler.webp",
+  "white-guava-guava-and-pomegranate": "white-guava-pomegranate-filler.webp",
   "casablanca-mint": "darjeeling-casablanca-mint-filler.webp",
   "spring-darjeeling": "darjeeling-spring-filler.webp",
   "white-darjeeling": "darjeeling-white-filler.webp",
+  "darjeeling-blueberry":"darjeeling-blueberry-filler.webp",
+  "darjeeling-cream-earl-grey":"darjeeling-cream-earl-grey-filler.webp",
+  "darjeeling-earl-grey":"darjeeling-earl-grey-filler.webp",
+  "darjeeling-ginger-peach":"darjeeling-ginger-peach-filler.webp",
+  "darjeeling-monks-blend":"darjeeling-monks-blend-filler.webp",
+  "darjeeling-peach-apricot":"darjeeling-peach-apricot-filler.webp",
+  "darjeeling-strawberry":"darjeeling-strawberry-filler.webp",
   "aquarius": "zodiac-aquarius-filler.webp",
   "aries": "zodiac-aries-filler.webp",
   "cancer": "zodiac-cancer-filler.webp",
@@ -303,6 +439,73 @@ const knownImages = {
   "decaf-raspberry": "decaf-raspberry-filler.webp",
   "decaf-strawberry": "decaf-strawberry-filler.webp",
   "decaf-vanilla": "decaf-vanilla-filler.webp",
+  "dandelion-detox": "metro-wellness/dandelion-detox.webp",
+  "enertea": "metro-wellness/enertea.webp",
+  "focus-pocus": "metro-wellness/focus-pocus.webp",
+  "hangover-helper": "metro-wellness/hangover-helper.webp",
+  "head-harmony": "metro-wellness/head-harmony.webp",
+  "heidi-s-lemon-ginger-tonic": "metro-wellness/heidis-lemon-ginger-tonic.webp",
+  "hibiscus-mint": "metro-wellness/hibiscus-mint.webp",
+  "jet-lag-awake-herbal": "metro-wellness/jet-lag-awake-herbal.webp",
+  "lavender-lemonade": "metro-wellness/lavender-lemonade.webp",
+  "lavender-mint": "metro-wellness/lavender-mint.webp",
+  "lemon-ginger-cinnamon": "metro-wellness/lemon-ginger-cinnamon.webp",
+  "lemon-mate": "metro-wellness/lemon-mate.webp",
+  "on-the-waterfront": "metro-wellness/on-the-waterfront.webp",
+  "rosemary-mint-eucalyptus": "metro-wellness/rosemary-mint-eucalyptus.webp",
+  "sangria": "metro-wellness/sangria.webp",
+  "spiced-mullein": "metro-wellness/spiced-mullein.webp",
+  "turmeric-solace": "metro-wellness/turmeric-solace.webp",
+  "wellness-balance": "metro-wellness/wellness-balance.webp",
+  "wellness-energy": "metro-wellness/wellness-energy.webp",
+  "wellness-serenity": "metro-wellness/wellness-serenity.webp",
+  "apple-ginger-botanical": "metro-wellness/apple-ginger-botanical.webp",
+  "ayurvedic-calming": "metro-wellness/ayurvedic-calming.webp",
+  "ayurvedic-total-body": "metro-wellness/ayurvedic-total-body.webp",
+  "belly-becalm": "metro-wellness/belly-becalm.webp",
+  "camomile-lemongrass": "metro-wellness/camomile-lemongrass.webp",
+  "camomile-mint": "metro-wellness/camomile-mint.webp",
+  "cranberry-bark": "metro-wellness/cranberry-bark.webp",
+  "anthony-cleopatra-black-tea-hearts": "metro-wellness/anthony-cleopatra-black-tea-hearts.webp",
+  "romeo-juliet-green-tea-hearts": "metro-wellness/romeo-juliet-green-tea-hearts.webp",
+  "ginger-turmeric": "metro-wellness/ginger-turmeric.webp",
+  "head-to-toes": "metro-wellness/head-to-toes.webp",
+  "soothing-roots": "metro-wellness/soothing-roots.webp",
+  "tranquil-turmeric": "metro-wellness/tranquil-turmeric.webp",
+  "collagen-booster": "metro-wellness/collagen-booster.webp",
+  "cucumber-lemon-refresher": "metro-wellness/cucumber-lemon-refresher.webp",
+  "golden-glow": "metro-wellness/golden-glow.webp",
+  "ayurvedic-purify": "metro-wellness/ayurvedic-purify.webp",
+  "cleanse-refresh": "metro-wellness/cleanse-refresh.webp",
+  "senna-quick-start": "metro-wellness/senna-quick-start.webp",
+  "ylg-nutri-slimming-green-oolong": "metro-wellness/ylg-nutri-slimming-green-oolong.webp",
+  "breathe-deep": "metro-wellness/breathe-deep.webp",
+  "cold-bgone": "metro-wellness/cold-bgone.webp",
+  "cranberry-echinacea": "metro-wellness/cranberry-echinacea.webp",
+  "flu-fighter": "metro-wellness/flu-fighter.webp",
+  "sick-day": "metro-wellness/sick-day.webp",
+  "spicy-ginger-pineapple": "metro-wellness/spicy-ginger-pineapple.webp",
+  "zesty-tulsi": "metro-wellness/zesty-tulsi.webp",
+  "digestive-blue": "metro-wellness/digestive-blue.webp",
+  "gut-feeling": "metro-wellness/gut-feeling.webp",
+  "berry-guarana-mate": "metro-wellness/berry-guarana-mate.webp",
+  "citrus-blossom": "metro-wellness/citrus-blossom.webp",
+  "jet-lag-awake-strawberry": "metro-wellness/jet-lag-awake-strawberry.webp",
+  "power-up-citrus-twist": "metro-wellness/power-up-citrus-twist.webp",
+  "bamboo-camomile": "metro-wellness/bamboo-camomile.webp",
+  "crimson-peach-bloom": "metro-wellness/crimson-peach-bloom.webp",
+  "ayurvedic-immune": "metro-wellness/ayurvedic-immune.webp",
+  "immunity-berry": "metro-wellness/immunity-berry.webp",
+  "huh": "metro-wellness/huh.webp",
+  "calming-de-stress": "metro-wellness/calming-de-stress.webp",
+  "calming-tulsi": "metro-wellness/calming-tulsi.webp",
+  "raspberry-lemon-verbena": "metro-wellness/raspberry-lemon-verbena.webp",
+  "stress-less": "metro-wellness/stress-less.webp",
+  "mindful-moringa": "metro-wellness/mindful-moringa.webp",
+  "lullaby": "metro-wellness/lullaby.webp",
+  "poets-wellness-vanilla-lavender-tea": "metro-wellness/poets-wellness-vanilla-lavender-tea.webp",
+  "sweet-dreams": "metro-wellness/sweet-dreams.webp",
+  "womens-flourishing-matrix": "metro-wellness/womens-flourishing-matrix-v2.png",
   "40-winks": "wellness-40-winks-filler.webp",
   "breathe-well": "wellness-breathe-well-filler.webp",
   "daydream": "wellness-daydream-filler.webp",
@@ -394,7 +597,10 @@ const knownImages = {
   "vanilla-and-cinnamon": "metro-flavored-black/vanilla-and-cinnamon-styled.webp",
   "very-merry-cherry": "metro-flavored-black/very-merry-cherry-styled.webp",
   "vienna-eggnog": "metro-flavored-black/vienna-eggnog-styled.webp",
-  "white-chocolate-mousse": "metro-flavored-black/white-chocolate-mousse-styled.webp"
+  "white-chocolate-mousse": "metro-flavored-black/white-chocolate-mousse-styled.webp",
+  "citrus-sage": "tea-final/citrus-sage-v1.png",
+  "rosemary-eucalyptus": "tea-final/rosemary-eucalyptus-v1.png",
+  "poet-s-wellness-vanilla-lavender-tea": "herbal-lavender-lemon-filler.webp"
 };
 
 let currentSeries = "Green Tea";
@@ -407,7 +613,7 @@ function showNotice(message) {
 }
 
 function formatPrice(value) {
-  if (!value || String(value).toUpperCase() === "TBD") return "Price TBD";
+  if (!value || String(value).toUpperCase() === "TBD") return "Temporarily unavailable";
   return String(value).startsWith("$") ? value : "$" + value;
 }
 
@@ -425,7 +631,11 @@ function availabilityClass(tea) {
 }
 
 function teaHaystack(tea) {
-  return [tea.name, tea.series, tea.description, tea.ingredients, tea.flavors.join(" "), tea.search, tea.clarification].join(" ").toLowerCase();
+  return [tea.name, tea.series, ...(tea.secondarySeries || []), tea.description, tea.ingredients, tea.flavors.join(" "), tea.search, tea.clarification].join(" ").toLowerCase();
+}
+
+function teaBelongsToSeries(tea, series) {
+  return tea.series === series || (tea.secondarySeries || []).includes(series);
 }
 
 function teaResultCard(tea) {
@@ -474,11 +684,11 @@ function seriesSlug(name) {
 function renderSeriesNavigation() {
   seriesSelect.innerHTML = seriesList.map(name => `<option value="${name}">${name}</option>`).join("");
   seriesMenu.innerHTML = seriesList.map(name => {
-    const total = teas.filter(tea => tea.series === name).length;
+    const total = teas.filter(tea => teaBelongsToSeries(tea, name)).length;
     return `<button type="button" data-series="${name}"><span>${name}</span><small>${total} teas</small></button>`;
   }).join("");
   collectionSeriesGrid.innerHTML = seriesList.map(name => {
-    const total = teas.filter(tea => tea.series === name).length;
+    const total = teas.filter(tea => teaBelongsToSeries(tea, name)).length;
     const artwork = seriesArtwork[name];
     return `<button class="collection-card" type="button" data-series="${name}" style="--collection-art:url('assets/series-backgrounds/${artwork}')">
       <span class="collection-card-art" aria-hidden="true"></span>
@@ -498,11 +708,42 @@ function updateSeriesPresentation() {
   seriesMenu.querySelectorAll("[data-series]").forEach(button => button.classList.toggle("active", button.dataset.series === currentSeries));
 }
 
+const cautionSymbols = {allergy: "*", medical: "**", stimulant: "***", dietary: "****"};
+const cautionLabels = {allergy: "Allergy concern", medical: "Ingredient note", stimulant: "High caffeine or stimulant ingredients", dietary: "Dietary exception or added sugar"};
+
+function teaCautionMarker(tea) {
+  return "";
+}
+
+function teaAvailabilityCautionMarker(tea, includeLink = false) {
+  const codes = tea.cautionCodes || [];
+  if (!codes.length) return "";
+  const label = codes.map(code => cautionLabels[code]).join(", ");
+  const symbols = codes.map(code => cautionSymbols[code]).join(" ");
+  const link = `<button class="disclaimer-jump" type="button" data-open-product-info="${tea.slug}">More information</button>`;
+  return `<span class="availability-caution-marker" aria-label="Important product information: ${label}" title="${label}">${symbols}</span>${includeLink ? link : ""}`;
+}
+
+function openProductInfo(tea) {
+  const codes = tea.cautionCodes || [];
+  const cleanNotice = notice => notice.replace(/^[A-Z][A-Z -]+:\s*/, "");
+  const specific = codes.map((code, index) => `<p><b>${cautionSymbols[code]} ${cautionLabels[code]}:</b> ${cleanNotice(tea.cautionNotices[index])}</p>`).join("");
+  document.querySelector("#product-info-title").textContent = `${tea.name} — product information`;
+  document.querySelector("#product-info-copy").innerHTML = specific;
+  document.querySelector("#product-info-modal").hidden = false;
+}
+
+function teaCautionNotices(tea) {
+  const codes = tea.cautionCodes || [];
+  const specific = codes.map((code, index) => `<p><b>${cautionLabels[code]}:</b> ${tea.cautionNotices[index]}</p>`).join("");
+  return `<details class="ingredient-caution${codes.length ? " has-specific-caution" : ""}"><summary>Important product information</summary><div class="ingredient-caution-list">${specific}<p class="tea-advisory">These statements have not been evaluated by the FDA. This product is not intended to diagnose, treat, cure, or prevent disease. Review ingredients and consult a healthcare professional when appropriate. <a href="mailto:sugarplumcountry@gmail.com?subject=Tea%20Ingredient%20Question%20-%20${encodeURIComponent(tea.name)}">Questions? Please contact us</a>; we are happy to help you review the product information.</p></div></details>`;
+}
+
 function renderCards() {
   const term = search.value.trim().toLowerCase();
   const status = availability.value;
   const results = teas.filter(tea => {
-    if (tea.series !== currentSeries) return false;
+    if (!teaBelongsToSeries(tea, currentSeries)) return false;
     const haystack = teaHaystack(tea);
     const matchesTerm = !term || haystack.includes(term);
     const lower = tea.availability.toLowerCase();
@@ -515,9 +756,9 @@ function renderCards() {
     <article class="tea-card">
       ${teaImage(tea)}
       <div class="tea-card-body">
-        <h2>${tea.name}</h2>
+        <h2>${tea.name}${teaCautionMarker(tea)}</h2>
         <p class="flavors">${tea.flavors.slice(0, 3).join(" · ") || "Artisan loose-leaf tea"}</p>
-        <p><span class="badge ${availabilityClass(tea)}">${tea.availability}</span></p>
+        <p><span class="badge ${availabilityClass(tea)}">${tea.availability}</span>${teaAvailabilityCautionMarker(tea)}</p>
         <button class="view-tea" type="button" data-slug="${tea.slug}">View Tea</button>
       </div>
     </article>`).join("");
@@ -548,17 +789,18 @@ function showCollectionHome(updateHash = true) {
 function teaDetailCard(tea) {
   const allPricesReady = tea.sizes.every(size => size.price && String(size.price).toUpperCase() !== "TBD");
   const availableRelated = tea.related.filter(name => teas.some(item => item.name.toLowerCase() === name.toLowerCase()));
-  return `<article class="comparison-card" data-open-tea="${tea.slug}" style="--tea-card-background:url('assets/${seriesCardArtwork[tea.series] || "victorian-tea-postcard-bg.webp"}')">
+  const cardSeries = teaBelongsToSeries(tea, currentSeries) ? currentSeries : tea.series;
+  return `<article class="comparison-card" data-open-tea="${tea.slug}" style="--tea-card-background:url('assets/${seriesCardArtwork[cardSeries] || "victorian-tea-postcard-bg.webp"}')">
     <div class="drag-handle" aria-label="Drag this tea card">Drag to compare</div>
     <button class="close-tea" type="button" data-close-tea="${tea.slug}" aria-label="Close ${tea.name}">×</button>
     <div class="detail-layout">
       ${teaImage(tea, true)}
       <div class="detail-copy">
         <p class="breadcrumb">Artisan Tea Collection <span>/</span> ${tea.series} <span>/</span> ${tea.name}</p>
-        <h2>${tea.name}</h2>
+        <h2>${tea.name}${teaCautionMarker(tea)}</h2>
         <p class="detail-tags">${tea.series} · ${tea.flavors.slice(0, 3).join(" · ")}</p>
-        <p><span class="badge ${availabilityClass(tea)}">${tea.availability}</span></p>
-        <p class="availability-message"><em>${tea.availability === "Available to Order" ? "Hand-packed in shop. Please allow approximately 3–5 business days for preparation." : tea.message}</em>${tea.return ? `<br><strong>Estimated return: ${tea.return}</strong>` : ""}${tea.notes ? `<br><span>${tea.notes}</span>` : ""}</p>
+        <p><span class="badge ${availabilityClass(tea)}">${tea.availability}</span>${teaAvailabilityCautionMarker(tea, true)}</p>
+        <p class="availability-message"><em>${tea.availability === "Available to Order" ? "Hand-packed in shop. Please allow approximately 3–5 business days for preparation." : tea.message}</em>${tea.return ? `<br><strong>Estimated return: ${tea.return}</strong>` : ""}</p>
         <p class="detail-description">${tea.description}</p>
       </div>
       <div class="card-details">
@@ -572,8 +814,8 @@ function teaDetailCard(tea) {
         <div class="servings">
           ${tea.sizes.map((size, index) => `<button class="serving ${index === 0 ? "selected" : ""}" type="button" data-size="${size.name}"><span>${size.name}</span><small>${size.detail.replace(/^.*?—\s*/, "")}</small><strong>${formatPrice(size.price)}</strong></button>`).join("")}
         </div>
-        <div class="cart-row"><select aria-label="Quantity"><option>1</option><option>2</option><option>3</option></select><button class="add-to-cart" type="button" ${allPricesReady ? "" : "disabled"}>${allPricesReady ? "ADD TO CART" : "ADD TO CART — PRICING PENDING"}</button><p class="tea-bag-note">Biodegradable tea bags sold separately.<br><span>Tea accessories coming soon.</span></p></div>
-        <div class="related"><h3>Related Teas</h3>${availableRelated.map(name => `<button type="button" data-related="${name}">${name} →</button>`).join("") || "<p>Related selections will be added as the collection grows.</p>"}</div>
+        <div class="cart-row"><select aria-label="Quantity"><option>1</option><option>2</option><option>3</option></select><button class="add-to-cart" type="button" ${allPricesReady ? "" : "disabled"}>${allPricesReady ? "ADD TO CART" : "TEMPORARILY UNAVAILABLE"}</button><p class="tea-bag-note">Biodegradable tea bags sold separately.<span>Tea accessories coming soon.</span></p></div>
+        <div class="related"><h3>Related Teas</h3><div class="related-links">${availableRelated.map(name => `<button type="button" data-related="${name}">${name}</button>`).join("") || "<p>Related selections will be added as the collection grows.</p>"}</div></div>
       </div>
     </div>
   </article>`;
@@ -652,6 +894,12 @@ collectionSeriesGrid.addEventListener("click", event => {
   if (button) chooseSeries(button.dataset.series);
 });
 detail.addEventListener("click", event => {
+  const productInfo = event.target.closest("[data-open-product-info]");
+  if (productInfo) {
+    const tea = teas.find(item => item.slug === productInfo.dataset.openProductInfo);
+    if (tea) openProductInfo(tea);
+    return;
+  }
   const closeTea = event.target.closest("[data-close-tea]");
   if (closeTea) {
     const card = closeTea.closest(".comparison-card");
@@ -724,6 +972,9 @@ detail.addEventListener("pointerup", event => {
   dragState = null;
 });
 dialog.querySelector(".close").addEventListener("click", () => dialog.close());
+document.querySelector("#product-info-modal").addEventListener("click", event => {
+  if (event.target.matches("[data-close-product-info], .product-info-backdrop")) document.querySelector("#product-info-modal").hidden = true;
+});
 comparisonToggle.addEventListener("click", () => {
   const minimized = dialog.classList.toggle("minimized");
   comparisonToggle.textContent = minimized ? "Open Comparison" : "Minimize";
@@ -770,9 +1021,3 @@ window.addEventListener("message", event => {
 renderSeriesNavigation();
 loadHash();
 
-
-// Keep the Tea app header hidden when it is embedded inside the Wix page.
-if (new URLSearchParams(window.location.search).get("embed") === "wix") {
-  const embeddedHeader = document.querySelector(".brand-header");
-  if (embeddedHeader) embeddedHeader.style.display = "none";
-}
