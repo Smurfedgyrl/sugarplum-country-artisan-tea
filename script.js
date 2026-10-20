@@ -749,13 +749,42 @@ function teaAvailabilityCautionMarker(tea, includeLink = false) {
   return `<span class="availability-caution-marker" aria-label="Important product information: ${label}" title="${label}">${symbols}</span>${includeLink ? link : ""}`;
 }
 
-function openProductInfo(tea) {
+function placeNearAnchor(element, anchor, options = {}) {
+  const margin = options.margin || 18;
+  const anchorRect = anchor?.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+  const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+  const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
+  const fallbackLeft = options.fallbackLeft ?? margin;
+  const fallbackTop = options.fallbackTop ?? margin;
+  let left = fallbackLeft;
+  let top = fallbackTop;
+
+  if (anchorRect) {
+    left = anchorRect.left + (anchorRect.width - elementRect.width) / 2;
+    top = options.below
+      ? anchorRect.bottom + 10
+      : anchorRect.top - Math.min(options.lift || 110, elementRect.height * .22);
+
+    if (options.below && top + elementRect.height > viewportHeight - margin) {
+      top = anchorRect.top - elementRect.height - 10;
+    }
+  }
+
+  element.style.left = `${Math.max(margin, Math.min(left, viewportWidth - elementRect.width - margin))}px`;
+  element.style.top = `${Math.max(margin, Math.min(top, viewportHeight - elementRect.height - margin))}px`;
+}
+
+function openProductInfo(tea, anchor = null) {
   const codes = tea.cautionCodes || [];
   const cleanNotice = notice => notice.replace(/^[A-Z][A-Z -]+:\s*/, "");
   const specific = codes.map((code, index) => `<p><b>${cautionSymbols[code]} ${cautionLabels[code]}:</b> ${cleanNotice(tea.cautionNotices[index])}</p>`).join("");
   document.querySelector("#product-info-title").textContent = `${tea.name} — product information`;
   document.querySelector("#product-info-copy").innerHTML = specific;
-  document.querySelector("#product-info-modal").hidden = false;
+  const modal = document.querySelector("#product-info-modal");
+  const panel = modal.querySelector(".product-info-panel");
+  modal.hidden = false;
+  requestAnimationFrame(() => placeNearAnchor(panel, anchor, { below: true, margin: 16 }));
 }
 
 function teaCautionNotices(tea) {
@@ -868,7 +897,7 @@ function refreshTeaTabs() {
   }).join("");
 }
 
-function openTea(slug, updateHash = true) {
+function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
   if (!dialog.open) {
@@ -884,9 +913,10 @@ function openTea(slug, updateHash = true) {
     comparisonGrid.insertAdjacentHTML("beforeend", teaDetailCard(tea));
     const added = comparisonGrid.lastElementChild;
     const offset = (comparisonGrid.children.length - 1) * 34;
-    added.style.left = `${Math.min(24 + offset, Math.max(24, window.innerWidth - 940))}px`;
-    added.style.top = `${Math.min(18 + offset, Math.max(18, window.innerHeight - 644))}px`;
+    placeNearAnchor(added, anchor, { fallbackLeft: 24 + offset, fallbackTop: 18 + offset, lift: 145 });
     refreshTeaTabs();
+  } else if (anchor) {
+    placeNearAnchor(existing, anchor, { lift: 145 });
   }
   activateTeaCard(slug, updateHash);
 }
@@ -908,7 +938,7 @@ function loadHash() {
 
 grid.addEventListener("click", event => {
   const button = event.target.closest("[data-slug]");
-  if (button) openTea(button.dataset.slug);
+  if (button) openTea(button.dataset.slug, true, button);
 });
 seriesMenu.addEventListener("click", event => {
   const button = event.target.closest("[data-series]");
@@ -922,7 +952,7 @@ detail.addEventListener("click", event => {
   const productInfo = event.target.closest("[data-open-product-info]");
   if (productInfo) {
     const tea = teas.find(item => item.slug === productInfo.dataset.openProductInfo);
-    if (tea) openProductInfo(tea);
+    if (tea) openProductInfo(tea, productInfo);
     return;
   }
   const closeTea = event.target.closest("[data-close-tea]");
@@ -966,7 +996,7 @@ detail.addEventListener("click", event => {
   const related = event.target.closest("[data-related]");
   if (related) {
     const found = teas.find(tea => tea.name.toLowerCase() === related.dataset.related.toLowerCase());
-    if (found) openTea(found.slug); else showNotice("That related tea is not in the current website launch collection.");
+    if (found) openTea(found.slug, true, related); else showNotice("That related tea is not in the current website launch collection.");
   }
 });
 
