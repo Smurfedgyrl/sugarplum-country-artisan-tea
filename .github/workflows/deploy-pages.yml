@@ -30,6 +30,7 @@ jobs:
           unzip -q tea-collection.zip -d _site
           rm -rf _site/.openai
           cat safe-data.part* | tr -d '\r\n' | base64 --decode > _site/data.js
+          cp index.html _site/index.html
           cp script.js _site/script.js
           cp styles.css _site/styles.css
           sed -i 's/data.js?v=[0-9]*/data.js?v=34/' _site/index.html

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Artisan Tea Collection | Sugarplum Country</title>
+  <meta name="description" content="Browse Sugarplum Country's hand-packed artisan tea collection by series." />
+  <link rel="stylesheet" href="styles.css?v=109" />
+</head>
+<body data-series="home">
+  <header class="brand-header" aria-label="Sugarplum Country Artisan Tea Collection">
+    <img src="assets/green-header.jpg?v=2" alt="Sugarplum Country — Artisan Tea Collection" />
+    <nav aria-label="Main navigation">
+      <button type="button" data-nav="search" aria-label="Search the website"></button>
+      <button type="button" data-nav="account" aria-label="Account preview"></button>
+      <button type="button" data-nav="cart" aria-label="Cart preview"></button>
+    </nav>
+  </header>
+  <section id="site-search-panel" class="site-search-panel" hidden>
+    <label class="search-field"><span aria-hidden="true">⌕</span><span class="sr-only">Search the website</span><input id="site-search" type="search" placeholder="Search the website" autocomplete="off" /></label>
+    <p class="search-guidance">For more tailored results, try searching within a specific product line or collection.</p>
+    <div id="site-search-results" class="quick-search-results" aria-live="polite"></div>
+  </section>
+
+  <main>
+    <div class="side-art side-art-left" aria-hidden="true"></div>
+    <div class="side-art side-art-right" aria-hidden="true"></div>
+    <section class="collection-home" id="collection-home" aria-labelledby="collection-home-title">
+      <div class="collection-entry" id="tea-collections">
+        <p class="eyebrow">Sugarplum Country</p>
+        <div class="ornament-title home-title">
+          <h1 id="collection-home-title">Choose a Tea</h1>
+        </div>
+        <p class="collection-intro">Explore our artisan tea collection, thoughtfully arranged by series and hand packed in shop. Travel down the exciting path of teas and tales—the journey awaits!</p>
+        <p class="collection-assistance">Need assistance along the way? No worries—Abby and the entire Sugarplum family are prepared to help you find the perfect cup!</p>
+        <a class="collection-message-link" href="mailto:sugarplumcountry@gmail.com?subject=Tea%20Collection%20Assistance">Send Us a Message</a>
+        <label class="search-field collection-search-field"><span aria-hidden="true">⌕</span><span class="sr-only">Search the tea collection</span><input id="collection-search" type="search" placeholder="Search the tea collection" autocomplete="off" /></label>
+        <p class="search-guidance">Try keywords such as “green” or “earthy.” For more tailored results, open a tea series and search within.</p>
+      </div>
+      <div id="collection-search-results" class="tea-grid collection-search-results" aria-live="polite" hidden></div>
+      <div id="collection-series-grid" class="collection-series-grid" aria-label="Choose a tea collection"></div>
+    </section>
+
+    <section class="catalog" id="catalog" aria-labelledby="series-title" hidden>
+      <p class="breadcrumb"><button id="all-series" type="button">← All Tea Collections</button> <span>/</span> <span id="breadcrumb-series">Green Tea</span></p>
+      <div class="ornament-title">
+        <h1 id="series-title">Green Tea</h1>
+      </div>
+      <p class="series-copy" id="series-copy"></p>
+      <p class="series-count"><strong id="result-count">0</strong> teas in this series</p>
+
+      <div id="series-menu" class="series-menu" aria-label="Tea series navigation" hidden></div>
+
+      <div class="controls" role="search">
+        <label class="select-field series-field" hidden>
+          <span>Tea Series</span>
+          <select id="series-select" aria-label="Choose a tea series"></select>
+        </label>
+        <label class="search-field">
+          <span aria-hidden="true">⌕</span>
+          <span class="sr-only">Search the series</span>
+          <input id="search" type="search" placeholder="Search the series" autocomplete="off" />
+        </label>
+        <label class="select-field sort-field">
+          <span>Sort</span>
+          <select id="sort-order" aria-label="Sort teas">
+            <option value="az">Sort: A–Z</option>
+            <option value="za">Sort: Z–A</option>
+          </select>
+        </label>
+        <label class="select-field">
+          <span>Availability</span>
+          <select id="availability">
+            <option value="all">Availability: All</option>
+            <option value="available">Availability: Available to Order</option>
+            <option value="seasonal">Availability: Seasonal</option>
+            <option value="unavailable">Availability: Currently Unavailable</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="collection-rule"><span id="showing-series">Showing the Green Tea collection</span></div>
+      <div id="tea-grid" class="tea-grid" aria-live="polite"></div>
+      <div id="empty" class="empty" hidden>No teas match that search. Try another word.</div>
+      <div id="product-guidance" class="caution-legend"><strong>Product-information markers:</strong> * Allergy concern · ** Ingredient note · *** High caffeine or stimulant ingredients · **** Dietary exception or added sugar. Review every ingredient list before use. <strong>These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</strong> <a href="mailto:sugarplumcountry@gmail.com?subject=Tea%20Ingredient%20Question">Please contact us with questions</a>; we are happy to help you review the product information.</div>
+    </section>
+  </main>
+
+  <dialog id="tea-dialog" class="tea-dialog">
+    <button class="toggle-comparison" type="button" aria-expanded="true">Minimize</button>
+    <button class="close" type="button" aria-label="Close tea details">×</button>
+    <article id="tea-detail"></article>
+  </dialog>
+
+  <div id="product-info-modal" class="product-info-modal" hidden>
+    <div class="product-info-backdrop" aria-hidden="true"></div>
+    <section class="product-info-panel" role="dialog" aria-modal="true" aria-labelledby="product-info-title">
+      <button type="button" data-close-product-info aria-label="Close product information">×</button>
+      <h2 id="product-info-title">Product information</h2>
+      <div id="product-info-copy"></div>
+    </section>
+  </div>
+
+  <div id="notice" class="notice" role="status" aria-live="polite"></div>
+  <script src="data.js?v=32"></script>
+  <script src="script.js?v=78"></script>
+</body>
+</html>
+
