@@ -505,7 +505,7 @@ const knownImages = {
   "lullaby": "metro-wellness/lullaby.webp",
   "poets-wellness-vanilla-lavender-tea": "metro-wellness/poets-wellness-vanilla-lavender-tea.webp",
   "sweet-dreams": "metro-wellness/sweet-dreams.webp",
-  "womens-flourishing-matrix": "metro-wellness/womens-flourishing-matrix-v2.png",
+  "womens-flourishing-matrix": "metro-wellness/womens-flourishing-matrix-v3.jpg",
   "40-winks": "wellness-40-winks-filler.webp",
   "breathe-well": "wellness-breathe-well-filler.webp",
   "daydream": "wellness-daydream-filler.webp",
