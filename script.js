@@ -943,17 +943,23 @@ grid.addEventListener("click", event => {
   if (button) openTea(button.dataset.slug, true, button);
 });
 
-document.addEventListener("click", event => {
+function parkTeaDialog() {
   if (!dialog.open || dialog.classList.contains("parked")) return;
-  if (event.target.closest(".comparison-card, .product-info-modal, .open-teas-tray")) return;
   const activeCard = detail.querySelector(".comparison-card.active");
   const tray = detail.querySelector(".open-teas-tray");
   if (activeCard && tray) {
     const rect = activeCard.getBoundingClientRect();
-    tray.style.left = `${Math.max(18, rect.right - 180)}px`;
-    tray.style.top = `${Math.max(18, rect.top + 12)}px`;
+    const trayWidth = 162;
+    tray.style.left = `${Math.max(18, Math.min(window.innerWidth - trayWidth - 18, rect.right - trayWidth))}px`;
+    tray.style.top = `${Math.max(18, Math.min(window.innerHeight - 64, rect.top + 12))}px`;
   }
   dialog.classList.add("parked");
+}
+
+document.addEventListener("click", event => {
+  if (!dialog.open || dialog.classList.contains("parked")) return;
+  if (event.target.closest(".comparison-card, .product-info-modal, .open-teas-tray")) return;
+  parkTeaDialog();
 }, true);
 
 seriesMenu.addEventListener("click", event => {
@@ -1065,7 +1071,7 @@ window.addEventListener("pointercancel", finishCardDrag, true);
 // behind the page. Its Open teas tray remains available for restoration.
 window.addEventListener("blur", () => {
   if (!dialog.open || dialog.classList.contains("parked") || dragState) return;
-  dialog.classList.add("parked");
+  parkTeaDialog();
 });
 dialog.querySelector(".close").addEventListener("click", () => dialog.close());
 const productInfoModal = document.querySelector("#product-info-modal");
