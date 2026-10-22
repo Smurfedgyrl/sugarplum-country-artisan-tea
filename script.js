@@ -1029,27 +1029,43 @@ let dragState = null;
 detail.addEventListener("pointerdown", event => {
   const card = event.target.closest(".comparison-card");
   const handle = event.target.closest(".drag-handle");
-  if (!card || !handle) return;
+  if (!card || !handle || (event.button !== undefined && event.button !== 0)) return;
   const rect = card.getBoundingClientRect();
-  dragState = { card, dx: event.clientX - rect.left, dy: event.clientY - rect.top };
-  card.setPointerCapture(event.pointerId);
+  dragState = {
+    card,
+    pointerId: event.pointerId,
+    dx: event.clientX - rect.left,
+    dy: event.clientY - rect.top
+  };
+  handle.setPointerCapture?.(event.pointerId);
   activateTeaCard(card.dataset.openTea);
-  card.style.cursor = "grabbing";
+  card.classList.add("dragging");
   event.preventDefault();
+  event.stopPropagation();
 });
-detail.addEventListener("pointermove", event => {
-  if (!dragState) return;
+window.addEventListener("pointermove", event => {
+  if (!dragState || event.pointerId !== dragState.pointerId) return;
   const {card, dx, dy} = dragState;
   const maxLeft = Math.max(0, window.innerWidth - card.offsetWidth);
   const maxTop = Math.max(0, window.innerHeight - card.offsetHeight);
   card.style.left = `${Math.max(0, Math.min(maxLeft, event.clientX - dx))}px`;
   card.style.top = `${Math.max(0, Math.min(maxTop, event.clientY - dy))}px`;
-});
-detail.addEventListener("pointerup", event => {
-  if (!dragState) return;
-  dragState.card.releasePointerCapture(event.pointerId);
-  dragState.card.style.cursor = "";
+  event.preventDefault();
+}, true);
+function finishCardDrag(event) {
+  if (!dragState || (event.pointerId !== undefined && event.pointerId !== dragState.pointerId)) return;
+  dragState.card.classList.remove("dragging");
   dragState = null;
+}
+window.addEventListener("pointerup", finishCardDrag, true);
+window.addEventListener("pointercancel", finishCardDrag, true);
+
+// The catalog is embedded in Wix. Clicking the surrounding site moves focus
+// outside this frame, so park the open card just as an ordinary window falls
+// behind the page. Its Open teas tray remains available for restoration.
+window.addEventListener("blur", () => {
+  if (!dialog.open || dialog.classList.contains("parked") || dragState) return;
+  dialog.classList.add("parked");
 });
 dialog.querySelector(".close").addEventListener("click", () => dialog.close());
 const productInfoModal = document.querySelector("#product-info-modal");
