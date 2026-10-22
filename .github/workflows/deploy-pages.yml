@@ -40,7 +40,7 @@ jobs:
           cp assets/green-header-clean.jpg _site/assets/green-header-clean.jpg
           cp assets/green-header-functional-search.png _site/assets/green-header-functional-search.png
           cp -r assets/metro-wellness _site/assets/metro-wellness
-          test "$(find _site/assets/metro-wellness -maxdepth 1 -type f | wc -l)" -eq 69
+          test "$(find _site/assets/metro-wellness -maxdepth 1 -type f | wc -l)" -eq 70
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Tea Collection
