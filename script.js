@@ -640,7 +640,8 @@ function teaImage(tea, detailView = false) {
   const className = detailView ? "detail-photo" : "tea-image";
   const fallback = seriesFallbackImages[tea.series] || "herbal-lavender-lemon-filler.webp";
   const image = detailView && tea.slug === "apricot-green" ? "apricot-green-hero.jpg" : (knownImages[tea.slug] || fallback);
-  return `<div class="${className}"><img src="assets/${image}" data-fallback="assets/${fallback}" alt="${tea.name} loose-leaf tea" /></div>`;
+  const imageVersion = image.startsWith("metro-wellness/") ? "?v=1" : "";
+  return `<div class="${className}"><img src="assets/${image}${imageVersion}" data-fallback="assets/${fallback}" alt="${tea.name} loose-leaf tea" /></div>`;
 }
 
 document.addEventListener("error", event => {

@@ -34,11 +34,13 @@ jobs:
           cp script.js _site/script.js
           cp styles.css _site/styles.css
           sed -i 's/data.js?v=[0-9]*/data.js?v=34/' _site/index.html
-          sed -i 's/script.js?v=[0-9]*/script.js?v=84/' _site/index.html
+          sed -i 's/script.js?v=[0-9]*/script.js?v=85/' _site/index.html
           sed -i 's/styles.css?v=[0-9]*/styles.css?v=113/' _site/index.html
           mkdir -p _site/assets
           cp assets/green-header-clean.jpg _site/assets/green-header-clean.jpg
           cp assets/green-header-functional-search.png _site/assets/green-header-functional-search.png
+          cp -r assets/metro-wellness _site/assets/metro-wellness
+          test "$(find _site/assets/metro-wellness -maxdepth 1 -type f | wc -l)" -eq 69
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Tea Collection
@@ -48,3 +50,4 @@ jobs:
       - name: Publish preview files
         id: deployment
         uses: actions/deploy-pages@v4
+
