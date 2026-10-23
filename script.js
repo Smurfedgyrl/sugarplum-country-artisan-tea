@@ -1034,8 +1034,8 @@ detail.addEventListener("click", event => {
 let dragState = null;
 detail.addEventListener("pointerdown", event => {
   const card = event.target.closest(".comparison-card");
-  const handle = event.target.closest(".drag-handle");
-  if (!card || !handle || (event.button !== undefined && event.button !== 0)) return;
+  const interactive = event.target.closest("button, select, input, textarea, a, summary, details, [role='button']");
+  if (!card || interactive || (event.button !== undefined && event.button !== 0)) return;
   const rect = card.getBoundingClientRect();
   dragState = {
     card,
@@ -1043,7 +1043,7 @@ detail.addEventListener("pointerdown", event => {
     dx: event.clientX - rect.left,
     dy: event.clientY - rect.top
   };
-  handle.setPointerCapture?.(event.pointerId);
+  card.setPointerCapture?.(event.pointerId);
   activateTeaCard(card.dataset.openTea);
   card.classList.add("dragging");
   event.preventDefault();
