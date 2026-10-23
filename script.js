@@ -520,7 +520,7 @@ const knownImages = {
   "lullaby": "metro-wellness/lullaby.webp",
   "poets-wellness-vanilla-lavender-tea": "metro-wellness/poets-wellness-vanilla-lavender-tea.webp",
   "sweet-dreams": "metro-wellness/sweet-dreams.webp",
-  "womens-flourishing-matrix": "metro-wellness/womens-flourishing-matrix-v2.png",
+  "womens-flourishing-matrix": "metro-wellness/womens-flourishing-matrix-v3.jpg",
   "40-winks": "wellness-40-winks-filler.webp",
   "breathe-well": "wellness-breathe-well-filler.webp",
   "daydream": "wellness-daydream-filler.webp",
@@ -615,10 +615,29 @@ const knownImages = {
   "white-chocolate-mousse": "metro-flavored-black/white-chocolate-mousse-styled.webp",
   "citrus-sage": "tea-final/citrus-sage-v1.png",
   "rosemary-eucalyptus": "tea-final/rosemary-eucalyptus-v1.png",
-  "poet-s-wellness-vanilla-lavender-tea": "metro-wellness/poets-wellness-vanilla-lavender-tea.webp"
+  "poet-s-wellness-vanilla-lavender-tea": "herbal-lavender-lemon-filler.webp"
 };
 
 let currentSeries = "Green Tea";
+
+const seriesFallbackImages = {
+  "Black Tea": "black-assam-melody-filler.webp",
+  "Green Tea": "citron-green.jpg",
+  "Oolong Tea": "oolong-peach-filler.webp",
+  "White Tea": "white-peach-filler.webp",
+  "Rooibos": "chai-cinnamon-rooibos-chai-filler.webp",
+  "Honeybush": "chai-cinnamon-rooibos-chai-filler.webp",
+  "Herbal Tea": "herbal-lavender-lemon-filler.webp",
+  "Chai": "chai-masala-chai-filler.webp",
+  "Earl Grey": "earl-grey-supreme-filler.webp",
+  "Matcha": "citron-green.jpg",
+  "Pu-Erh Tea": "black-chocolate-filler.webp",
+  "Darjeeling": "darjeeling-casablanca-mint-filler.webp",
+  "Seasonal Exclusives": "black-candy-cane-filler.webp",
+  "Zodiac Collection": "herbal-lavender-lemon-filler.webp",
+  "Decaf Tea": "decaf-earl-grey-filler.webp",
+  "Wellness": "herbal-lavender-lemon-filler.webp"
+};
 
 function showNotice(message) {
   notice.textContent = message;
@@ -634,11 +653,18 @@ function formatPrice(value) {
 
 function teaImage(tea, detailView = false) {
   const className = detailView ? "detail-photo" : "tea-image";
-  const image = detailView && tea.slug === "apricot-green" ? "apricot-green-hero.jpg" : knownImages[tea.slug];
-  if (image) return `<div class="${className}"><img src="assets/${image}" alt="${tea.name} loose-leaf tea" /></div>`;
-  const artwork = seriesArtwork[tea.series] || "green.webp";
-  return `<div class="${className} placeholder series-art-placeholder" role="img" aria-label="${tea.series} botanical collection artwork" style="--placeholder-art:url('assets/series-backgrounds/${artwork}')"></div>`;
+  const fallback = seriesFallbackImages[tea.series] || "herbal-lavender-lemon-filler.webp";
+  const image = detailView && tea.slug === "apricot-green" ? "apricot-green-hero.jpg" : (knownImages[tea.slug] || fallback);
+  const imageVersion = image.startsWith("metro-wellness/") ? "?v=1" : "";
+  return `<div class="${className}"><img src="assets/${image}${imageVersion}" data-fallback="assets/${fallback}" alt="${tea.name} loose-leaf tea" /></div>`;
 }
+
+document.addEventListener("error", event => {
+  const image = event.target;
+  if (!(image instanceof HTMLImageElement) || !image.dataset.fallback || image.dataset.fallbackApplied) return;
+  image.dataset.fallbackApplied = "true";
+  image.src = image.dataset.fallback;
+}, true);
 
 function availabilityClass(tea) {
   return tea.availability.toLowerCase().includes("season") ? "seasonal" :
@@ -739,13 +765,42 @@ function teaAvailabilityCautionMarker(tea, includeLink = false) {
   return `<span class="availability-caution-marker" aria-label="Important product information: ${label}" title="${label}">${symbols}</span>${includeLink ? link : ""}`;
 }
 
-function openProductInfo(tea) {
+function placeNearAnchor(element, anchor, options = {}) {
+  const margin = options.margin || 18;
+  const anchorRect = anchor?.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+  const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+  const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
+  const fallbackLeft = options.fallbackLeft ?? margin;
+  const fallbackTop = options.fallbackTop ?? margin;
+  let left = fallbackLeft;
+  let top = fallbackTop;
+
+  if (anchorRect) {
+    left = anchorRect.left + (anchorRect.width - elementRect.width) / 2;
+    top = options.below
+      ? anchorRect.bottom + 10
+      : anchorRect.top - Math.min(options.lift || 110, elementRect.height * .22);
+
+    if (options.below && top + elementRect.height > viewportHeight - margin) {
+      top = anchorRect.top - elementRect.height - 10;
+    }
+  }
+
+  element.style.left = `${Math.max(margin, Math.min(left, viewportWidth - elementRect.width - margin))}px`;
+  element.style.top = `${Math.max(margin, Math.min(top, viewportHeight - elementRect.height - margin))}px`;
+}
+
+function openProductInfo(tea, anchor = null) {
   const codes = tea.cautionCodes || [];
   const cleanNotice = notice => notice.replace(/^[A-Z][A-Z -]+:\s*/, "");
   const specific = codes.map((code, index) => `<p><b>${cautionSymbols[code]} ${cautionLabels[code]}:</b> ${cleanNotice(tea.cautionNotices[index])}</p>`).join("");
   document.querySelector("#product-info-title").textContent = `${tea.name} — product information`;
   document.querySelector("#product-info-copy").innerHTML = specific;
-  document.querySelector("#product-info-modal").hidden = false;
+  const modal = document.querySelector("#product-info-modal");
+  const panel = modal.querySelector(".product-info-panel");
+  modal.hidden = false;
+  requestAnimationFrame(() => placeNearAnchor(panel, anchor, { below: true, margin: 16 }));
 }
 
 function teaCautionNotices(tea) {
@@ -858,13 +913,14 @@ function refreshTeaTabs() {
   }).join("");
 }
 
-function openTea(slug, updateHash = true) {
+function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
   if (!dialog.open) {
-    detail.innerHTML = `<div class="comparison-grid"></div>`;
+    detail.innerHTML = `<div class="comparison-grid"></div><div class="open-teas-tray"><button class="open-teas-toggle" type="button" aria-expanded="false">Open teas</button><div class="comparison-tabs" role="tablist" aria-label="Open tea cards"></div></div>`;
     dialog.show();
   }
+  dialog.classList.remove("parked");
   dialog.classList.remove("minimized");
   comparisonToggle.textContent = "Minimize";
   comparisonToggle.setAttribute("aria-expanded", "true");
@@ -874,9 +930,10 @@ function openTea(slug, updateHash = true) {
     comparisonGrid.insertAdjacentHTML("beforeend", teaDetailCard(tea));
     const added = comparisonGrid.lastElementChild;
     const offset = (comparisonGrid.children.length - 1) * 34;
-    added.style.left = `${Math.min(24 + offset, Math.max(24, window.innerWidth - 940))}px`;
-    added.style.top = `${Math.min(18 + offset, Math.max(18, window.innerHeight - 644))}px`;
+    placeNearAnchor(added, anchor, { fallbackLeft: 24 + offset, fallbackTop: 18 + offset, lift: 145 });
     refreshTeaTabs();
+  } else if (anchor) {
+    placeNearAnchor(existing, anchor, { lift: 145 });
   }
   activateTeaCard(slug, updateHash);
 }
@@ -898,8 +955,35 @@ function loadHash() {
 
 grid.addEventListener("click", event => {
   const button = event.target.closest("[data-slug]");
-  if (button) openTea(button.dataset.slug);
+  if (button) openTea(button.dataset.slug, true, button);
 });
+
+function parkTeaDialog() {
+  if (!dialog.open || dialog.classList.contains("parked")) return;
+  const activeCard = detail.querySelector(".comparison-card.active");
+  const tray = detail.querySelector(".open-teas-tray");
+  if (activeCard && tray) {
+    const rect = activeCard.getBoundingClientRect();
+    const trayWidth = 162;
+    tray.style.left = `${Math.max(18, Math.min(window.innerWidth - trayWidth - 18, rect.right - trayWidth))}px`;
+    tray.style.top = `${Math.max(18, Math.min(window.innerHeight - 64, rect.top + 12))}px`;
+  }
+  dialog.classList.add("parked");
+}
+
+document.addEventListener("pointerdown", event => {
+  if (!dialog.open || dialog.classList.contains("parked")) return;
+  if (event.target.closest(".comparison-card, .product-info-modal, .open-teas-tray")) return;
+  parkTeaDialog();
+}, true);
+
+// Do not let a fixed card obstruct the collection while the visitor scrolls.
+// Park it in the Open teas tray so it can be restored without losing it.
+window.addEventListener("scroll", () => {
+  if (!dialog.open || dialog.classList.contains("parked") || dragState) return;
+  parkTeaDialog();
+}, { passive: true });
+
 seriesMenu.addEventListener("click", event => {
   const button = event.target.closest("[data-series]");
   if (button) chooseSeries(button.dataset.series);
@@ -909,10 +993,17 @@ collectionSeriesGrid.addEventListener("click", event => {
   if (button) chooseSeries(button.dataset.series);
 });
 detail.addEventListener("click", event => {
+  const openTeasToggle = event.target.closest(".open-teas-toggle");
+  if (openTeasToggle) {
+    const tray = openTeasToggle.closest(".open-teas-tray");
+    const expanded = tray.classList.toggle("expanded");
+    openTeasToggle.setAttribute("aria-expanded", String(expanded));
+    return;
+  }
   const productInfo = event.target.closest("[data-open-product-info]");
   if (productInfo) {
     const tea = teas.find(item => item.slug === productInfo.dataset.openProductInfo);
-    if (tea) openProductInfo(tea);
+    if (tea) openProductInfo(tea, productInfo);
     return;
   }
   const closeTea = event.target.closest("[data-close-tea]");
@@ -928,6 +1019,8 @@ detail.addEventListener("click", event => {
   }
   const teaTab = event.target.closest("[data-focus-tea]");
   if (teaTab) {
+    dialog.classList.remove("parked");
+    teaTab.closest(".open-teas-tray")?.classList.remove("expanded");
     activateTeaCard(teaTab.dataset.focusTea);
     return;
   }
@@ -956,39 +1049,56 @@ detail.addEventListener("click", event => {
   const related = event.target.closest("[data-related]");
   if (related) {
     const found = teas.find(tea => tea.name.toLowerCase() === related.dataset.related.toLowerCase());
-    if (found) openTea(found.slug); else showNotice("That related tea is not in the current website launch collection.");
+    if (found) openTea(found.slug, true, related); else showNotice("That related tea is not in the current website launch collection.");
   }
 });
 
 let dragState = null;
 detail.addEventListener("pointerdown", event => {
   const card = event.target.closest(".comparison-card");
-  const handle = event.target.closest(".drag-handle");
-  if (!card || !handle) return;
+  const interactive = event.target.closest("button, select, input, textarea, a, summary, details, [role='button']");
+  if (!card || interactive || (event.button !== undefined && event.button !== 0)) return;
   const rect = card.getBoundingClientRect();
-  dragState = { card, dx: event.clientX - rect.left, dy: event.clientY - rect.top };
-  card.setPointerCapture(event.pointerId);
+  dragState = {
+    card,
+    pointerId: event.pointerId,
+    dx: event.clientX - rect.left,
+    dy: event.clientY - rect.top
+  };
+  card.setPointerCapture?.(event.pointerId);
   activateTeaCard(card.dataset.openTea);
-  card.style.cursor = "grabbing";
+  card.classList.add("dragging");
   event.preventDefault();
+  event.stopPropagation();
 });
-detail.addEventListener("pointermove", event => {
-  if (!dragState) return;
+window.addEventListener("pointermove", event => {
+  if (!dragState || event.pointerId !== dragState.pointerId) return;
   const {card, dx, dy} = dragState;
   const maxLeft = Math.max(0, window.innerWidth - card.offsetWidth);
   const maxTop = Math.max(0, window.innerHeight - card.offsetHeight);
   card.style.left = `${Math.max(0, Math.min(maxLeft, event.clientX - dx))}px`;
   card.style.top = `${Math.max(0, Math.min(maxTop, event.clientY - dy))}px`;
-});
-detail.addEventListener("pointerup", event => {
-  if (!dragState) return;
-  dragState.card.releasePointerCapture(event.pointerId);
-  dragState.card.style.cursor = "";
+  event.preventDefault();
+}, true);
+function finishCardDrag(event) {
+  if (!dragState || (event.pointerId !== undefined && event.pointerId !== dragState.pointerId)) return;
+  dragState.card.classList.remove("dragging");
   dragState = null;
+}
+window.addEventListener("pointerup", finishCardDrag, true);
+window.addEventListener("pointercancel", finishCardDrag, true);
+
+// The catalog is embedded in Wix. Clicking the surrounding site moves focus
+// outside this frame, so park the open card just as an ordinary window falls
+// behind the page. Its Open teas tray remains available for restoration.
+window.addEventListener("blur", () => {
+  if (!dialog.open || dialog.classList.contains("parked") || dragState) return;
+  parkTeaDialog();
 });
 dialog.querySelector(".close").addEventListener("click", () => dialog.close());
-document.querySelector("#product-info-modal").addEventListener("click", event => {
-  if (event.target.matches("[data-close-product-info], .product-info-backdrop")) document.querySelector("#product-info-modal").hidden = true;
+const productInfoModal = document.querySelector("#product-info-modal");
+if (productInfoModal) productInfoModal.addEventListener("click", event => {
+  if (event.target.matches("[data-close-product-info], .product-info-backdrop")) productInfoModal.hidden = true;
 });
 comparisonToggle.addEventListener("click", () => {
   const minimized = dialog.classList.toggle("minimized");
