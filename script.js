@@ -995,6 +995,10 @@ collectionSeriesGrid.addEventListener("click", event => {
 detail.addEventListener("click", event => {
   const openTeasToggle = event.target.closest(".open-teas-toggle");
   if (openTeasToggle) {
+    if (suppressTrayToggle) {
+      suppressTrayToggle = false;
+      return;
+    }
     const tray = openTeasToggle.closest(".open-teas-tray");
     const expanded = tray.classList.toggle("expanded");
     openTeasToggle.setAttribute("aria-expanded", String(expanded));
@@ -1052,6 +1056,38 @@ detail.addEventListener("click", event => {
     if (found) openTea(found.slug, true, related); else showNotice("That related tea is not in the current website launch collection.");
   }
 });
+
+let trayDragState = null;
+let suppressTrayToggle = false;
+
+detail.addEventListener("pointerdown", event => {
+  const handle = event.target.closest(".open-teas-toggle");
+  if (!handle || (event.button !== undefined && event.button !== 0)) return;
+  const tray = handle.closest(".open-teas-tray");
+  const rect = tray.getBoundingClientRect();
+  trayDragState = { tray, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, dx: event.clientX - rect.left, dy: event.clientY - rect.top, moved: false };
+  handle.setPointerCapture?.(event.pointerId);
+});
+
+window.addEventListener("pointermove", event => {
+  if (!trayDragState || event.pointerId !== trayDragState.pointerId) return;
+  const state = trayDragState;
+  if (!state.moved && Math.hypot(event.clientX - state.startX, event.clientY - state.startY) < 5) return;
+  state.moved = true;
+  const maxLeft = Math.max(0, window.innerWidth - state.tray.offsetWidth);
+  const maxTop = Math.max(0, window.innerHeight - state.tray.offsetHeight);
+  state.tray.style.left = `${Math.max(0, Math.min(maxLeft, event.clientX - state.dx))}px`;
+  state.tray.style.top = `${Math.max(0, Math.min(maxTop, event.clientY - state.dy))}px`;
+  event.preventDefault();
+}, true);
+
+function finishTrayDrag(event) {
+  if (!trayDragState || (event.pointerId !== undefined && event.pointerId !== trayDragState.pointerId)) return;
+  suppressTrayToggle = trayDragState.moved;
+  trayDragState = null;
+}
+window.addEventListener("pointerup", finishTrayDrag, true);
+window.addEventListener("pointercancel", finishTrayDrag, true);
 
 let dragState = null;
 detail.addEventListener("pointerdown", event => {
