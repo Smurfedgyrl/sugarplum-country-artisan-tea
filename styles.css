@@ -415,7 +415,7 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
 
   /* Mobile tea details are a conventional scrollable product view, not a
      squeezed or draggable version of the desktop keepsake card. */
-  .tea-dialog[open] { inset: 0; width: 100vw; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: rgba(18,31,22,.7); pointer-events: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .tea-dialog[open] { inset: 0; width: 100vw; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: rgba(18,31,22,.7); pointer-events: auto; overscroll-behavior-y: auto; touch-action: pan-y pinch-zoom; -webkit-overflow-scrolling: touch; }
   .comparison-heading { display: none; }
   .comparison-grid, #tea-detail { width: 100%; height: auto; min-height: 100%; overflow: visible; pointer-events: auto; }
   .comparison-card, .comparison-card.active {
@@ -598,7 +598,7 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
     overflow-y: auto;
     transform: none !important;
     cursor: default;
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -723,7 +723,7 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
   .desktop-view-label { display: none; }
   .mobile-view-label { display: inline; }
   .tea-card-body .view-tea { min-height: 48px; padding-inline: 12px; font-size: 15px; line-height: 1.15; }
-  .tea-dialog[open] { inset: 0; width: 100vw; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: rgba(18,31,22,.7); pointer-events: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .tea-dialog[open] { inset: 0; width: 100vw; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: rgba(18,31,22,.7); pointer-events: auto; overscroll-behavior-y: auto; touch-action: pan-y pinch-zoom; -webkit-overflow-scrolling: touch; }
   .comparison-heading { display: none; }
   .comparison-grid, #tea-detail { width: 100%; height: auto; min-height: 100%; padding: 0; overflow: visible; pointer-events: auto; }
   .comparison-card, .comparison-card.active {
@@ -743,7 +743,7 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
     background: var(--paper);
     box-shadow: none;
     cursor: default;
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
   }
   .comparison-card.active { display: block; }
   .comparison-card .drag-handle { display: none; }

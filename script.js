@@ -858,7 +858,22 @@ function showCollectionHome(updateHash = true) {
 
 function teaDetailCard(tea) {
   const allPricesReady = tea.sizes.every(size => size.price && String(size.price).toUpperCase() !== "TBD");
-  const availableRelated = tea.related.filter(name => teas.some(item => item.name.toLowerCase() === name.toLowerCase()));
+  const availableRelated = tea.related
+    .filter(name => teas.some(item => item.name.toLowerCase() === name.toLowerCase()))
+    .slice(0, 3);
+  if (availableRelated.length < 3) {
+    const flavorWords = new Set(tea.flavors.map(flavor => flavor.toLowerCase()));
+    const fallbacks = teas
+      .filter(item => item.slug !== tea.slug && !availableRelated.some(name => name.toLowerCase() === item.name.toLowerCase()))
+      .map(item => ({
+        item,
+        score: (teaBelongsToSeries(item, tea.series) ? 4 : 0)
+          + item.flavors.filter(flavor => flavorWords.has(flavor.toLowerCase())).length
+      }))
+      .filter(candidate => candidate.score > 0)
+      .sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name));
+    fallbacks.slice(0, 3 - availableRelated.length).forEach(candidate => availableRelated.push(candidate.item.name));
+  }
   const cardSeries = teaBelongsToSeries(tea, currentSeries) ? currentSeries : tea.series;
   return `<article class="comparison-card" data-open-tea="${tea.slug}" style="--tea-card-background:url('assets/${seriesCardArtwork[cardSeries] || "victorian-tea-postcard-bg.webp"}')">
     <div class="drag-handle" aria-label="Drag this tea card">Drag to compare</div>
@@ -1091,6 +1106,7 @@ window.addEventListener("pointercancel", finishTrayDrag, true);
 
 let dragState = null;
 detail.addEventListener("pointerdown", event => {
+  if (window.matchMedia("(max-width: 650px)").matches) return;
   const card = event.target.closest(".comparison-card");
   const interactive = event.target.closest("button, select, input, textarea, a, summary, details, [role='button']");
   if (!card || interactive || (event.button !== undefined && event.button !== 0)) return;
