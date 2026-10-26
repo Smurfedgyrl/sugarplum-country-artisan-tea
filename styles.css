@@ -415,7 +415,7 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
 
   /* Mobile tea details are a conventional scrollable product view, not a
      squeezed or draggable version of the desktop keepsake card. */
-  .tea-dialog[open] { inset: 0; width: 100vw; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: rgba(18,31,22,.7); pointer-events: auto; overscroll-behavior-y: auto; touch-action: pan-y pinch-zoom; -webkit-overflow-scrolling: touch; }
+  .tea-dialog[open] { inset: 0; width: 100%; max-width: 100%; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: rgba(18,31,22,.7); pointer-events: auto; overscroll-behavior-y: auto; touch-action: pan-y pinch-zoom; -webkit-overflow-scrolling: touch; }
   .comparison-heading { display: none; }
   .comparison-grid, #tea-detail { width: 100%; height: auto; min-height: 100%; overflow: visible; pointer-events: auto; }
   .comparison-card, .comparison-card.active {
@@ -723,14 +723,14 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
   .desktop-view-label { display: none; }
   .mobile-view-label { display: inline; }
   .tea-card-body .view-tea { min-height: 48px; padding-inline: 12px; font-size: 15px; line-height: 1.15; }
-  .tea-dialog[open] { inset: 0; width: 100vw; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: rgba(18,31,22,.7); pointer-events: auto; overscroll-behavior-y: auto; touch-action: pan-y pinch-zoom; -webkit-overflow-scrolling: touch; }
+  .tea-dialog[open] { inset: 0; width: 100%; max-width: 100%; height: 100dvh; overflow-x: hidden; overflow-y: auto; background: rgba(18,31,22,.7); pointer-events: auto; overscroll-behavior-y: auto; touch-action: pan-y pinch-zoom; -webkit-overflow-scrolling: touch; }
   .comparison-heading { display: none; }
   .comparison-grid, #tea-detail { width: 100%; height: auto; min-height: 100%; padding: 0; overflow: visible; pointer-events: auto; }
   .comparison-card, .comparison-card.active {
     position: relative;
     inset: auto !important;
     display: none;
-    width: 100vw;
+    width: 100%;
     max-width: none;
     height: auto;
     min-height: 100dvh;
@@ -748,15 +748,15 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
   .comparison-card.active { display: block; }
   .comparison-card .drag-handle { display: none; }
   .comparison-card .close-tea { position: fixed; top: max(12px, env(safe-area-inset-top)); right: 12px; z-index: 20; width: 42px; height: 42px; background: rgba(250,246,235,.96); box-shadow: 0 3px 14px rgba(28,19,12,.25); }
-  .comparison-card .detail-layout { display: flex; flex-direction: column; width: 100%; height: auto; min-height: 100%; padding: 0 0 calc(28px + env(safe-area-inset-bottom)); background: var(--paper); box-shadow: none; }
+  .comparison-card .detail-layout { display: flex; flex-direction: column; width: 100%; max-width: 100%; height: auto; min-height: 100%; padding: 0 0 calc(28px + env(safe-area-inset-bottom)); overflow-x: hidden; background: var(--paper); box-shadow: none; }
   .comparison-card .detail-layout::after { display: none; }
   .comparison-card .detail-photo { order: 0; flex: 0 0 auto; width: 100%; height: 235px; min-height: 235px; max-height: 235px; margin: 0; border: 0; outline: 0; box-shadow: none; }
-  .comparison-card .detail-copy { order: 1; width: auto; margin: 0; padding: 20px 18px 12px; background: #fbf5e8; border: 0; border-bottom: 1px solid var(--line); }
+  .comparison-card .detail-copy { order: 1; width: 100%; min-width: 0; max-width: 100%; margin: 0; padding: 20px 18px 12px; overflow-wrap: anywhere; background: #fbf5e8; border: 0; border-bottom: 1px solid var(--line); }
   .comparison-card .detail-copy h2 { padding-right: 46px; font-size: 30px; line-height: 1.08; }
   .comparison-card .detail-tags { margin: 7px 0; white-space: normal; overflow: visible; font-size: 15px; line-height: 1.35; }
   .comparison-card .availability-message { margin: 10px 0; padding: 9px 10px; font-size: 13px; line-height: 1.35; }
   .comparison-card .detail-description { margin-top: 10px; font-size: 15px; line-height: 1.45; }
-  .comparison-card .card-details { order: 2; width: auto; margin: 0; padding: 14px 18px 28px; background: #fffaf0; border: 0; }
+  .comparison-card .card-details { order: 2; width: 100%; min-width: 0; max-width: 100%; margin: 0; padding: 14px 18px 28px; overflow-wrap: anywhere; background: #fffaf0; border: 0; }
   .comparison-card .facts { grid-template-columns: 1fr; gap: 9px; margin: 0 0 16px; font-size: 13px; }
   .comparison-card .fact { padding: 10px 11px; background: rgba(246,236,215,.65); }
   .comparison-card .fact h3 { font-size: 15px; }
