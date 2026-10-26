@@ -829,7 +829,7 @@ function renderCards() {
         <h2>${tea.name}${teaCautionMarker(tea)}</h2>
         <p class="flavors">${tea.flavors.slice(0, 3).join(" · ") || "Artisan loose-leaf tea"}</p>
         <p><span class="badge ${availabilityClass(tea)}">${tea.availability}</span>${teaAvailabilityCautionMarker(tea)}</p>
-        <button class="view-tea" type="button" data-slug="${tea.slug}">View Tea</button>
+        <button class="view-tea" type="button" data-slug="${tea.slug}"><span class="desktop-view-label">View Tea</span><span class="mobile-view-label">View details, sizes &amp; pricing</span></button>
       </div>
     </article>`).join("");
 }
