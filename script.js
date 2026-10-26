@@ -945,7 +945,7 @@ function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
   if (!dialog.open) {
-    detail.innerHTML = `<div class="comparison-grid"></div><div class="open-teas-tray"><button class="open-teas-toggle" type="button" aria-expanded="false">Open teas</button><div class="comparison-tabs" role="tablist" aria-label="Open tea cards"></div></div>`;
+    detail.innerHTML = `<div class="comparison-grid"></div>`;
     dialog.show();
   }
   dialog.classList.remove("parked");
@@ -987,16 +987,10 @@ grid.addEventListener("click", event => {
 });
 
 function parkTeaDialog() {
-  if (isMobileTeaUI() || !dialog.open || dialog.classList.contains("parked")) return;
-  const activeCard = detail.querySelector(".comparison-card.active");
-  const tray = detail.querySelector(".open-teas-tray");
-  if (activeCard && tray) {
-    const rect = activeCard.getBoundingClientRect();
-    const trayWidth = 162;
-    tray.style.left = `${Math.max(18, Math.min(window.innerWidth - trayWidth - 18, rect.right - trayWidth))}px`;
-    tray.style.top = `${Math.max(18, Math.min(window.innerHeight - 64, rect.top + 12))}px`;
-  }
-  dialog.classList.add("parked");
+  // Tea cards now remain open until the visitor deliberately closes them.
+  // The former parked/minimized tray made ordinary taps hide the card,
+  // especially inside the Wix mobile frame.
+  return;
 }
 
 document.addEventListener("pointerdown", event => {
