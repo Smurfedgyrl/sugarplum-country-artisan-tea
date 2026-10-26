@@ -916,6 +916,14 @@ function activateTeaCard(slug, updateHash = true) {
   });
   const activeCard = cards.find(card => card.dataset.openTea === slug);
   if (activeCard) activeCard.style.zIndex = String(30 + cards.length);
+  if (activeCard && window.matchMedia("(max-width: 650px)").matches) {
+    requestAnimationFrame(() => {
+      dialog.scrollTop = 0;
+      detail.scrollTop = 0;
+      activeCard.scrollTop = 0;
+      activeCard.querySelector(".detail-photo")?.scrollIntoView({ block: "start" });
+    });
+  }
   if (updateHash) history.replaceState(null, "", `#tea/${slug}`);
 }
 
