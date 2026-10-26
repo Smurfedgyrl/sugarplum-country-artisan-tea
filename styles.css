@@ -282,7 +282,7 @@ body[data-series="black"] .tea-card h2 { color: #51233f; }
 .comparison-tabs button.active { color: var(--hunter); background: #f5eddd; }
 .comparison-grid { width: 100%; height: 100%; padding: 0; overflow: hidden; }
 .comparison-grid, #tea-detail { position: relative; width: 100%; height: 100%; pointer-events: none; }
-.comparison-card { position: absolute; display: block; width: min(885px, calc(100vw - 64px)); height: min(572px, calc(100vh - 64px)); margin: 0; overflow: hidden; border: 3px double #aa7a35; border-radius: 4px; background: #ead8b6; box-shadow: 0 18px 55px rgba(20,15,9,.42), inset 0 0 0 7px rgba(255,250,232,.78); cursor: grab; touch-action: none; pointer-events: auto; }
+.comparison-card { position: absolute; display: block; width: min(885px, calc(100vw - 64px)); height: min(572px, calc(100vh - 64px)); margin: 0; overflow: hidden; border: 3px double #aa7a35; border-radius: 4px; background: #ead8b6; box-shadow: 0 18px 55px rgba(20,15,9,.42), inset 0 0 0 7px rgba(255,250,232,.78); cursor: default; touch-action: auto; pointer-events: auto; }
 .comparison-card button, .comparison-card select, .comparison-card input, .comparison-card textarea, .comparison-card a, .comparison-card summary { cursor: pointer; }
 .comparison-card.active { display: block; box-shadow: 0 24px 70px rgba(20,15,9,.55), inset 0 0 0 7px rgba(255,250,232,.78); }
 .comparison-card .drag-handle { position: absolute; z-index: 6; top: 7px; left: 50%; min-width: 128px; padding: 3px 14px 4px; transform: translateX(-50%); border: 1px solid rgba(143,99,43,.48); border-radius: 999px; color: #6a4928; background: rgba(255,248,229,.88); font-size: 11px; letter-spacing: .08em; text-align: center; text-transform: uppercase; cursor: grab; touch-action: none; user-select: none; }

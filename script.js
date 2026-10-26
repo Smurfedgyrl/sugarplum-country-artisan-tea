@@ -1113,10 +1113,9 @@ window.addEventListener("pointercancel", finishTrayDrag, true);
 
 let dragState = null;
 detail.addEventListener("pointerdown", event => {
-  if (isMobileTeaUI()) return;
-  const card = event.target.closest(".comparison-card");
-  const interactive = event.target.closest("button, select, input, textarea, a, summary, details, [role='button']");
-  if (!card || interactive || (event.button !== undefined && event.button !== 0)) return;
+  const handle = event.target.closest(".drag-handle");
+  const card = handle?.closest(".comparison-card");
+  if (isMobileTeaUI() || !handle || !card || (event.button !== undefined && event.button !== 0)) return;
   const rect = card.getBoundingClientRect();
   dragState = {
     card,
