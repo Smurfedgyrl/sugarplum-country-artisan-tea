@@ -36,6 +36,11 @@ const dialog = document.querySelector("#tea-dialog");
 const detail = document.querySelector("#tea-detail");
 const notice = document.querySelector("#notice");
 const comparisonToggle = dialog.querySelector(".toggle-comparison");
+
+function isMobileTeaUI() {
+  return window.matchMedia("(max-width: 650px)").matches
+    || window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+}
 const title = document.querySelector("#series-title");
 const seriesCopy = document.querySelector("#series-copy");
 const breadcrumbSeries = document.querySelector("#breadcrumb-series");
@@ -916,7 +921,7 @@ function activateTeaCard(slug, updateHash = true) {
   });
   const activeCard = cards.find(card => card.dataset.openTea === slug);
   if (activeCard) activeCard.style.zIndex = String(30 + cards.length);
-  if (activeCard && window.matchMedia("(max-width: 650px)").matches) {
+  if (activeCard && isMobileTeaUI()) {
     requestAnimationFrame(() => {
       dialog.scrollTop = 0;
       detail.scrollTop = 0;
@@ -982,7 +987,7 @@ grid.addEventListener("click", event => {
 });
 
 function parkTeaDialog() {
-  if (!dialog.open || dialog.classList.contains("parked")) return;
+  if (isMobileTeaUI() || !dialog.open || dialog.classList.contains("parked")) return;
   const activeCard = detail.querySelector(".comparison-card.active");
   const tray = detail.querySelector(".open-teas-tray");
   if (activeCard && tray) {
@@ -1114,7 +1119,7 @@ window.addEventListener("pointercancel", finishTrayDrag, true);
 
 let dragState = null;
 detail.addEventListener("pointerdown", event => {
-  if (window.matchMedia("(max-width: 650px)").matches) return;
+  if (isMobileTeaUI()) return;
   const card = event.target.closest(".comparison-card");
   const interactive = event.target.closest("button, select, input, textarea, a, summary, details, [role='button']");
   if (!card || interactive || (event.button !== undefined && event.button !== 0)) return;
