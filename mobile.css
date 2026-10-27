@@ -11,7 +11,8 @@ body {
 body.mobile-detail-open main,
 body.mobile-detail-open > .site-search-panel,
 body.mobile-detail-open > .brand-header {
-  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .desktop-view-label { display: none; }
@@ -24,7 +25,11 @@ body.mobile-detail-open > .brand-header {
 }
 
 .tea-dialog[open] {
-  position: static;
+  position: absolute;
+  top: var(--mobile-dialog-top, 0);
+  right: 0;
+  bottom: auto;
+  left: 0;
   z-index: 100;
   display: block;
   width: 100%;
