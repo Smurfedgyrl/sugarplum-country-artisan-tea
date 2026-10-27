@@ -5,7 +5,7 @@ const mobileBrowserIdentity = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Min
 if (mobileBrowserIdentity && !document.querySelector('link[data-mobile-tea-styles]')) {
   const mobileStyles = document.createElement("link");
   mobileStyles.rel = "stylesheet";
-  mobileStyles.href = "mobile.css?v=1";
+  mobileStyles.href = "mobile.css?v=2";
   mobileStyles.dataset.mobileTeaStyles = "true";
   document.head.appendChild(mobileStyles);
 }
@@ -892,7 +892,6 @@ function teaDetailCard(tea) {
   }
   const cardSeries = teaBelongsToSeries(tea, currentSeries) ? currentSeries : tea.series;
   return `<article class="comparison-card" data-open-tea="${tea.slug}" style="--tea-card-background:url('assets/${seriesCardArtwork[cardSeries] || "victorian-tea-postcard-bg.webp"}')">
-    <div class="drag-handle" aria-label="Drag this tea card">Drag to compare</div>
     <button class="close-tea" type="button" data-close-tea="${tea.slug}" aria-label="Close ${tea.name}">×</button>
     <div class="detail-layout">
       ${teaImage(tea, true)}
@@ -997,26 +996,6 @@ grid.addEventListener("click", event => {
   if (button) openTea(button.dataset.slug, true, button);
 });
 
-function parkTeaDialog() {
-  // Tea cards now remain open until the visitor deliberately closes them.
-  // The former parked/minimized tray made ordinary taps hide the card,
-  // especially inside the Wix mobile frame.
-  return;
-}
-
-document.addEventListener("pointerdown", event => {
-  if (!dialog.open || dialog.classList.contains("parked")) return;
-  if (event.target.closest(".comparison-card, .product-info-modal, .open-teas-tray")) return;
-  parkTeaDialog();
-}, true);
-
-// Do not let a fixed card obstruct the collection while the visitor scrolls.
-// Park it in the Open teas tray so it can be restored without losing it.
-window.addEventListener("scroll", () => {
-  if (!dialog.open || dialog.classList.contains("parked") || dragState) return;
-  parkTeaDialog();
-}, { passive: true });
-
 seriesMenu.addEventListener("click", event => {
   const button = event.target.closest("[data-series]");
   if (button) chooseSeries(button.dataset.series);
@@ -1026,17 +1005,6 @@ collectionSeriesGrid.addEventListener("click", event => {
   if (button) chooseSeries(button.dataset.series);
 });
 detail.addEventListener("click", event => {
-  const openTeasToggle = event.target.closest(".open-teas-toggle");
-  if (openTeasToggle) {
-    if (suppressTrayToggle) {
-      suppressTrayToggle = false;
-      return;
-    }
-    const tray = openTeasToggle.closest(".open-teas-tray");
-    const expanded = tray.classList.toggle("expanded");
-    openTeasToggle.setAttribute("aria-expanded", String(expanded));
-    return;
-  }
   const productInfo = event.target.closest("[data-open-product-info]");
   if (productInfo) {
     const tea = teas.find(item => item.slug === productInfo.dataset.openProductInfo);
@@ -1057,7 +1025,6 @@ detail.addEventListener("click", event => {
   const teaTab = event.target.closest("[data-focus-tea]");
   if (teaTab) {
     dialog.classList.remove("parked");
-    teaTab.closest(".open-teas-tray")?.classList.remove("expanded");
     activateTeaCard(teaTab.dataset.focusTea);
     return;
   }
@@ -1090,80 +1057,6 @@ detail.addEventListener("click", event => {
   }
 });
 
-let trayDragState = null;
-let suppressTrayToggle = false;
-
-detail.addEventListener("pointerdown", event => {
-  const handle = event.target.closest(".open-teas-toggle");
-  if (!handle || (event.button !== undefined && event.button !== 0)) return;
-  const tray = handle.closest(".open-teas-tray");
-  const rect = tray.getBoundingClientRect();
-  trayDragState = { tray, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, dx: event.clientX - rect.left, dy: event.clientY - rect.top, moved: false };
-  handle.setPointerCapture?.(event.pointerId);
-});
-
-window.addEventListener("pointermove", event => {
-  if (!trayDragState || event.pointerId !== trayDragState.pointerId) return;
-  const state = trayDragState;
-  if (!state.moved && Math.hypot(event.clientX - state.startX, event.clientY - state.startY) < 5) return;
-  state.moved = true;
-  const maxLeft = Math.max(0, window.innerWidth - state.tray.offsetWidth);
-  const maxTop = Math.max(0, window.innerHeight - state.tray.offsetHeight);
-  state.tray.style.left = `${Math.max(0, Math.min(maxLeft, event.clientX - state.dx))}px`;
-  state.tray.style.top = `${Math.max(0, Math.min(maxTop, event.clientY - state.dy))}px`;
-  event.preventDefault();
-}, true);
-
-function finishTrayDrag(event) {
-  if (!trayDragState || (event.pointerId !== undefined && event.pointerId !== trayDragState.pointerId)) return;
-  suppressTrayToggle = trayDragState.moved;
-  trayDragState = null;
-}
-window.addEventListener("pointerup", finishTrayDrag, true);
-window.addEventListener("pointercancel", finishTrayDrag, true);
-
-let dragState = null;
-detail.addEventListener("pointerdown", event => {
-  const handle = event.target.closest(".drag-handle");
-  const card = handle?.closest(".comparison-card");
-  if (isMobileTeaUI() || !handle || !card || (event.button !== undefined && event.button !== 0)) return;
-  const rect = card.getBoundingClientRect();
-  dragState = {
-    card,
-    pointerId: event.pointerId,
-    dx: event.clientX - rect.left,
-    dy: event.clientY - rect.top
-  };
-  card.setPointerCapture?.(event.pointerId);
-  activateTeaCard(card.dataset.openTea);
-  card.classList.add("dragging");
-  event.preventDefault();
-  event.stopPropagation();
-});
-window.addEventListener("pointermove", event => {
-  if (!dragState || event.pointerId !== dragState.pointerId) return;
-  const {card, dx, dy} = dragState;
-  const maxLeft = Math.max(0, window.innerWidth - card.offsetWidth);
-  const maxTop = Math.max(0, window.innerHeight - card.offsetHeight);
-  card.style.left = `${Math.max(0, Math.min(maxLeft, event.clientX - dx))}px`;
-  card.style.top = `${Math.max(0, Math.min(maxTop, event.clientY - dy))}px`;
-  event.preventDefault();
-}, true);
-function finishCardDrag(event) {
-  if (!dragState || (event.pointerId !== undefined && event.pointerId !== dragState.pointerId)) return;
-  dragState.card.classList.remove("dragging");
-  dragState = null;
-}
-window.addEventListener("pointerup", finishCardDrag, true);
-window.addEventListener("pointercancel", finishCardDrag, true);
-
-// The catalog is embedded in Wix. Clicking the surrounding site moves focus
-// outside this frame, so park the open card just as an ordinary window falls
-// behind the page. Its Open teas tray remains available for restoration.
-window.addEventListener("blur", () => {
-  if (!dialog.open || dialog.classList.contains("parked") || dragState) return;
-  parkTeaDialog();
-});
 dialog.querySelector(".close").addEventListener("click", () => dialog.close());
 const productInfoModal = document.querySelector("#product-info-modal");
 if (productInfoModal) productInfoModal.addEventListener("click", event => {

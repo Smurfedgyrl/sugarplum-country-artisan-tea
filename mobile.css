@@ -35,7 +35,7 @@ body {
   box-shadow: none;
   pointer-events: auto;
   overscroll-behavior-y: auto;
-  touch-action: pan-y pinch-zoom;
+  touch-action: pan-y !important;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -73,7 +73,7 @@ body {
   background: var(--paper);
   box-shadow: none;
   cursor: default;
-  touch-action: pan-y pinch-zoom !important;
+  touch-action: pan-y !important;
 }
 .comparison-card.active {
   display: block !important;
