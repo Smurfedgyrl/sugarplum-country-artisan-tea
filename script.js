@@ -5,7 +5,7 @@ const mobileBrowserIdentity = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Min
 if (mobileBrowserIdentity && !document.querySelector('link[data-mobile-tea-styles]')) {
   const mobileStyles = document.createElement("link");
   mobileStyles.rel = "stylesheet";
-  mobileStyles.href = "mobile.css?v=2";
+  mobileStyles.href = "mobile.css?v=3";
   mobileStyles.dataset.mobileTeaStyles = "true";
   document.head.appendChild(mobileStyles);
 }
@@ -931,14 +931,6 @@ function activateTeaCard(slug, updateHash = true) {
   });
   const activeCard = cards.find(card => card.dataset.openTea === slug);
   if (activeCard) activeCard.style.zIndex = String(30 + cards.length);
-  if (activeCard && isMobileTeaUI()) {
-    requestAnimationFrame(() => {
-      dialog.scrollTop = 0;
-      detail.scrollTop = 0;
-      activeCard.scrollTop = 0;
-      activeCard.querySelector(".detail-photo")?.scrollIntoView({ block: "start" });
-    });
-  }
   if (updateHash) history.replaceState(null, "", `#tea/${slug}`);
 }
 
@@ -954,6 +946,12 @@ function refreshTeaTabs() {
 function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
+  if (isMobileTeaUI()) {
+    const anchorBlock = anchor?.closest?.(".tea-card") || anchor;
+    const anchorTop = anchorBlock?.getBoundingClientRect?.().top;
+    const inlineTop = Number.isFinite(anchorTop) ? anchorTop + window.scrollY : window.scrollY;
+    dialog.style.setProperty("--mobile-dialog-top", `${Math.max(0, inlineTop)}px`);
+  }
   if (!dialog.open) {
     detail.innerHTML = `<div class="comparison-grid"></div>`;
     dialog.show();
@@ -1069,6 +1067,7 @@ comparisonToggle.addEventListener("click", () => {
 });
 dialog.addEventListener("close", () => {
   detail.innerHTML = "";
+  dialog.style.removeProperty("--mobile-dialog-top");
   history.replaceState(null, "", `#series/${seriesSlug(currentSeries)}`);
 });
 search.addEventListener("input", renderCards);
