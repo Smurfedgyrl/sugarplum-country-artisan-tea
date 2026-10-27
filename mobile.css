@@ -1,0 +1,239 @@
+/* Explicit phone layout. Loaded from script.js when the browser identifies
+   itself as a phone, so Wix iframe sizing cannot accidentally select the
+   draggable desktop tea-card presentation. */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.desktop-view-label { display: none; }
+.mobile-view-label { display: inline; }
+.tea-card-body .view-tea {
+  min-height: 48px;
+  padding-inline: 12px;
+  font-size: 15px;
+  line-height: 1.15;
+}
+
+.tea-dialog[open] {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 0;
+  background: var(--paper);
+  box-shadow: none;
+  pointer-events: auto;
+  overscroll-behavior-y: auto;
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tea-dialog[open].parked .comparison-card { visibility: visible !important; }
+.comparison-heading,
+.drag-handle,
+.open-teas-tray { display: none !important; }
+.comparison-grid,
+#tea-detail {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: 100%;
+  padding: 0;
+  overflow: visible;
+  pointer-events: auto;
+}
+
+.comparison-card,
+.comparison-card.active {
+  position: relative !important;
+  inset: auto !important;
+  display: none !important;
+  width: 100% !important;
+  min-width: 0;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 100dvh;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  transform: none !important;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper);
+  box-shadow: none;
+  cursor: default;
+  touch-action: pan-y pinch-zoom !important;
+}
+.comparison-card.active {
+  display: block !important;
+  visibility: visible !important;
+}
+.comparison-card .close-tea {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: 12px;
+  z-index: 120;
+  width: 42px;
+  height: 42px;
+  background: rgba(250,246,235,.96);
+  box-shadow: 0 3px 14px rgba(28,19,12,.25);
+}
+.comparison-card .detail-layout {
+  display: flex !important;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  height: auto !important;
+  min-height: 100%;
+  padding: 0 0 calc(28px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  background: var(--paper);
+  box-shadow: none;
+}
+.comparison-card .detail-layout::after { display: none; }
+.comparison-card .detail-photo {
+  order: 0;
+  flex: 0 0 auto;
+  display: block;
+  width: 100%;
+  height: 250px;
+  min-height: 250px;
+  max-height: 250px;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+.comparison-card .detail-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.comparison-card .detail-copy {
+  order: 1;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 20px 18px 12px;
+  overflow-wrap: anywhere;
+  background: #fbf5e8;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+.comparison-card .detail-copy h2 {
+  padding-right: 46px;
+  font-size: 30px;
+  line-height: 1.08;
+}
+.comparison-card .detail-tags {
+  margin: 7px 0;
+  overflow: visible;
+  white-space: normal;
+  font-size: 15px;
+  line-height: 1.35;
+}
+.comparison-card .availability-message {
+  margin: 10px 0;
+  padding: 9px 10px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.comparison-card .detail-description {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.comparison-card .card-details {
+  order: 2;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 14px 18px 28px;
+  overflow-wrap: anywhere;
+  background: #fffaf0;
+  border: 0;
+}
+.comparison-card .facts {
+  grid-template-columns: 1fr;
+  gap: 9px;
+  margin: 0 0 16px;
+  font-size: 13px;
+}
+.comparison-card .fact {
+  padding: 10px 11px;
+  background: rgba(246,236,215,.65);
+}
+.comparison-card .fact h3 { font-size: 15px; }
+.comparison-card .fact p {
+  font-size: 13px;
+  line-height: 1.35;
+}
+.comparison-card .serving-title,
+.comparison-card .servings,
+.comparison-card .cart-row,
+.comparison-card .related,
+.comparison-card[data-open-tea] .serving-title,
+.comparison-card[data-open-tea] .servings,
+.comparison-card[data-open-tea] .cart-row,
+.comparison-card[data-open-tea] .related {
+  top: 0 !important;
+}
+.comparison-card .serving-title {
+  margin: 15px 0 8px;
+  font-size: 17px;
+}
+.comparison-card .servings {
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.comparison-card .serving {
+  min-height: 82px;
+  padding: 9px 5px;
+  font-size: 13px;
+}
+.comparison-card .cart-row {
+  grid-template-columns: 82px 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.comparison-card .cart-row select,
+.comparison-card .cart-row button {
+  min-height: 46px;
+  font-size: 14px;
+}
+.comparison-card .cart-row .tea-bag-note {
+  padding: 7px 0;
+  white-space: normal;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.comparison-card .related {
+  margin-top: 10px;
+  padding-top: 12px;
+}
+.comparison-card .related h3 { font-size: 16px; }
+.comparison-card .related-links {
+  flex-wrap: wrap;
+  gap: 8px 15px;
+  white-space: normal;
+}
+.comparison-card .related button { font-size: 13px; }

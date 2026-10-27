@@ -1,4 +1,14 @@
 const catalog = window.TEA_CATALOG;
+const mobileBrowserIdentity = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  || navigator.userAgentData?.mobile === true;
+
+if (mobileBrowserIdentity && !document.querySelector('link[data-mobile-tea-styles]')) {
+  const mobileStyles = document.createElement("link");
+  mobileStyles.rel = "stylesheet";
+  mobileStyles.href = "mobile.css?v=1";
+  mobileStyles.dataset.mobileTeaStyles = "true";
+  document.head.appendChild(mobileStyles);
+}
 
 // Keep customer-facing full-pound prices in sync with the store's whole-dollar
 // full-pound discount. Other sizes and already-whole-dollar prices are unchanged.
@@ -38,7 +48,8 @@ const notice = document.querySelector("#notice");
 const comparisonToggle = dialog.querySelector(".toggle-comparison");
 
 function isMobileTeaUI() {
-  return window.matchMedia("(max-width: 650px)").matches
+  return mobileBrowserIdentity
+    || window.matchMedia("(max-width: 650px)").matches
     || window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 }
 const title = document.querySelector("#series-title");
