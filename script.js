@@ -5,7 +5,7 @@ const mobileBrowserIdentity = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Min
 if (mobileBrowserIdentity && !document.querySelector('link[data-mobile-tea-styles]')) {
   const mobileStyles = document.createElement("link");
   mobileStyles.rel = "stylesheet";
-  mobileStyles.href = "mobile.css?v=5";
+  mobileStyles.href = "mobile.css?v=6";
   mobileStyles.dataset.mobileTeaStyles = "true";
   document.head.appendChild(mobileStyles);
 }
@@ -948,10 +948,7 @@ function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
   if (isMobileTeaUI()) {
-    const anchorBlock = anchor?.closest?.(".tea-card") || anchor;
-    const anchorTop = anchorBlock?.getBoundingClientRect?.().top;
-    const dialogTop = Number.isFinite(anchorTop) ? anchorTop + window.scrollY : window.scrollY;
-    dialog.style.setProperty("--mobile-dialog-top", `${Math.max(0, dialogTop)}px`);
+    dialog.style.setProperty("--mobile-dialog-top", `${Math.max(0, window.scrollY)}px`);
     document.body.classList.add("mobile-detail-open");
   }
   if (!dialog.open) {

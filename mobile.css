@@ -45,6 +45,7 @@ body.mobile-detail-open > .brand-header {
   box-shadow: none;
   pointer-events: auto;
   touch-action: auto !important;
+  overflow-anchor: none;
 }
 
 .mobile-back-to-series {
