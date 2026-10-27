@@ -5,7 +5,7 @@ const mobileBrowserIdentity = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Min
 if (mobileBrowserIdentity && !document.querySelector('link[data-mobile-tea-styles]')) {
   const mobileStyles = document.createElement("link");
   mobileStyles.rel = "stylesheet";
-  mobileStyles.href = "mobile.css?v=3";
+  mobileStyles.href = "mobile.css?v=4";
   mobileStyles.dataset.mobileTeaStyles = "true";
   document.head.appendChild(mobileStyles);
 }
@@ -892,6 +892,7 @@ function teaDetailCard(tea) {
   }
   const cardSeries = teaBelongsToSeries(tea, currentSeries) ? currentSeries : tea.series;
   return `<article class="comparison-card" data-open-tea="${tea.slug}" style="--tea-card-background:url('assets/${seriesCardArtwork[cardSeries] || "victorian-tea-postcard-bg.webp"}')">
+    <button class="mobile-back-to-series" type="button" data-close-tea="${tea.slug}">← Back to ${cardSeries}</button>
     <button class="close-tea" type="button" data-close-tea="${tea.slug}" aria-label="Close ${tea.name}">×</button>
     <div class="detail-layout">
       ${teaImage(tea, true)}
@@ -947,10 +948,7 @@ function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
   if (isMobileTeaUI()) {
-    const anchorBlock = anchor?.closest?.(".tea-card") || anchor;
-    const anchorTop = anchorBlock?.getBoundingClientRect?.().top;
-    const inlineTop = Number.isFinite(anchorTop) ? anchorTop + window.scrollY : window.scrollY;
-    dialog.style.setProperty("--mobile-dialog-top", `${Math.max(0, inlineTop)}px`);
+    document.body.classList.add("mobile-detail-open");
   }
   if (!dialog.open) {
     detail.innerHTML = `<div class="comparison-grid"></div>`;
@@ -1067,7 +1065,7 @@ comparisonToggle.addEventListener("click", () => {
 });
 dialog.addEventListener("close", () => {
   detail.innerHTML = "";
-  dialog.style.removeProperty("--mobile-dialog-top");
+  document.body.classList.remove("mobile-detail-open");
   history.replaceState(null, "", `#series/${seriesSlug(currentSeries)}`);
 });
 search.addEventListener("input", renderCards);

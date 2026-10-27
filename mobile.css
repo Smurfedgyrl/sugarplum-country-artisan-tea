@@ -8,6 +8,12 @@ body {
   overflow-x: hidden;
 }
 
+body.mobile-detail-open main,
+body.mobile-detail-open > .site-search-panel,
+body.mobile-detail-open > .brand-header {
+  display: none !important;
+}
+
 .desktop-view-label { display: none; }
 .mobile-view-label { display: inline; }
 .tea-card-body .view-tea {
@@ -18,11 +24,7 @@ body {
 }
 
 .tea-dialog[open] {
-  position: absolute;
-  top: var(--mobile-dialog-top, 0);
-  right: 0;
-  bottom: auto;
-  left: 0;
+  position: static;
   z-index: 100;
   display: block;
   width: 100%;
@@ -38,6 +40,23 @@ body {
   box-shadow: none;
   pointer-events: auto;
   touch-action: auto !important;
+}
+
+.mobile-back-to-series {
+  position: sticky;
+  top: 0;
+  z-index: 130;
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 58px 10px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  color: #fff8e8;
+  background: var(--hunter);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: left;
 }
 
 .tea-dialog[open].parked .comparison-card { visibility: visible !important; }
@@ -81,8 +100,8 @@ body {
   visibility: visible !important;
 }
 .comparison-card .close-tea {
-  position: absolute;
-  top: 12px;
+  position: fixed;
+  top: 4px;
   right: 12px;
   z-index: 120;
   width: 42px;
