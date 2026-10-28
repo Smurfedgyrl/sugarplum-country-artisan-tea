@@ -5,7 +5,7 @@ const mobileBrowserIdentity = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Min
 if (mobileBrowserIdentity && !document.querySelector('link[data-mobile-tea-styles]')) {
   const mobileStyles = document.createElement("link");
   mobileStyles.rel = "stylesheet";
-  mobileStyles.href = "mobile.css?v=6";
+  mobileStyles.href = "mobile.css?v=7";
   mobileStyles.dataset.mobileTeaStyles = "true";
   document.head.appendChild(mobileStyles);
 }
@@ -944,6 +944,16 @@ function refreshTeaTabs() {
   }).join("");
 }
 
+function alignMobileTeaToTop(slug) {
+  if (!isMobileTeaUI()) return;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const card = detail.querySelector(`[data-open-tea="${slug}"]`);
+    const topControl = card?.querySelector(".mobile-back-to-series");
+    topControl?.scrollIntoView({ behavior: "auto", block: "start", inline: "nearest" });
+    topControl?.focus({ preventScroll: true });
+  }));
+}
+
 function openTea(slug, updateHash = true, anchor = null) {
   const tea = teas.find(item => item.slug === slug);
   if (!tea) return showNotice("That tea is not in the current website launch collection.");
@@ -971,6 +981,7 @@ function openTea(slug, updateHash = true, anchor = null) {
     placeNearAnchor(existing, anchor, { lift: 145 });
   }
   activateTeaCard(slug, updateHash);
+  alignMobileTeaToTop(slug);
 }
 
 function loadHash() {
