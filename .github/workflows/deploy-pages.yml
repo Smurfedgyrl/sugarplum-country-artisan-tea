@@ -28,20 +28,19 @@ jobs:
           cat sugarplum-tea-collection.zip.part1 sugarplum-tea-collection.zip.part2 > tea-collection.zip
           mkdir _site
           unzip -q tea-collection.zip -d _site
-          rm -rf _site/.openai
           cat safe-data.part* | tr -d '\r\n' | base64 --decode > _site/data.js
           cp index.html _site/index.html
           cp script.js _site/script.js
           cp styles.css _site/styles.css
           cp mobile.css _site/mobile.css
-          sed -i 's/data.js?v=[0-9]*/data.js?v=34/' _site/index.html
-          sed -i 's/script.js?v=[0-9]*/script.js?v=96/' _site/index.html
+          sed -i 's/data.js?v=[0-9]*/data.js?v=35/' _site/index.html
+          sed -i 's/script.js?v=[0-9]*/script.js?v=97/' _site/index.html
           sed -i 's/styles.css?v=[0-9]*/styles.css?v=118/' _site/index.html
           mkdir -p _site/assets
           cp assets/green-header-clean.jpg _site/assets/green-header-clean.jpg
           cp assets/green-header-functional-search.png _site/assets/green-header-functional-search.png
-          cp -r assets/metro-wellness _site/assets/metro-wellness
-          test "$(find _site/assets/metro-wellness -maxdepth 1 -type f | wc -l)" -eq 70
+          cp -r assets/tea-photos _site/assets/tea-photos
+          test "$(find _site/assets/tea-photos/wellness -maxdepth 1 -type f | wc -l)" -eq 70
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Tea Collection
