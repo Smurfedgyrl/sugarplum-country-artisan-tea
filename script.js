@@ -1,11 +1,14 @@
 const catalog = window.TEA_CATALOG;
 const mobileBrowserIdentity = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)
   || navigator.userAgentData?.mobile === true;
+const mobileLayoutIdentity = mobileBrowserIdentity
+  || window.matchMedia("(max-width: 650px)").matches
+  || window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 
-if (mobileBrowserIdentity && !document.querySelector('link[data-mobile-tea-styles]')) {
+if (mobileLayoutIdentity && !document.querySelector('link[data-mobile-tea-styles]')) {
   const mobileStyles = document.createElement("link");
   mobileStyles.rel = "stylesheet";
-  mobileStyles.href = "mobile.css?v=7";
+  mobileStyles.href = "mobile.css?v=8";
   mobileStyles.dataset.mobileTeaStyles = "true";
   document.head.appendChild(mobileStyles);
 }
@@ -48,9 +51,7 @@ const notice = document.querySelector("#notice");
 const comparisonToggle = dialog.querySelector(".toggle-comparison");
 
 function isMobileTeaUI() {
-  return mobileBrowserIdentity
-    || window.matchMedia("(max-width: 650px)").matches
-    || window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  return mobileLayoutIdentity;
 }
 const title = document.querySelector("#series-title");
 const seriesCopy = document.querySelector("#series-copy");
@@ -945,12 +946,21 @@ function refreshTeaTabs() {
 
 function alignMobileTeaToTop(slug) {
   if (!isMobileTeaUI()) return;
-  requestAnimationFrame(() => requestAnimationFrame(() => {
+  const dialogTop = Number.parseFloat(dialog.style.getPropertyValue("--mobile-dialog-top")) || 0;
+  const resetToProductTop = () => {
     const card = detail.querySelector(`[data-open-tea="${slug}"]`);
-    const topControl = card?.querySelector(".mobile-back-to-series");
-    topControl?.scrollIntoView({ behavior: "auto", block: "start", inline: "nearest" });
-    topControl?.focus({ preventScroll: true });
-  }));
+    if (!card?.classList.contains("active")) return;
+    dialog.scrollTop = 0;
+    window.scrollTo({ top: dialogTop, left: 0, behavior: "auto" });
+  };
+
+  // Mobile browsers sometimes preserve the position of the tapped catalog
+  // button after the product view is inserted. Reset after layout and again
+  // after image/layout settling so every tea starts at its photo and title.
+  document.activeElement?.blur?.();
+  requestAnimationFrame(() => requestAnimationFrame(resetToProductTop));
+  window.setTimeout(resetToProductTop, 80);
+  window.setTimeout(resetToProductTop, 240);
 }
 
 function openTea(slug, updateHash = true, anchor = null) {
