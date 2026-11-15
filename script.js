@@ -672,7 +672,8 @@ function teaImage(tea, detailView = false) {
   const fallback = seriesFallbackImages[tea.series] || "herbal-lavender-lemon-filler.webp";
   const image = detailView && tea.slug === "apricot-green" ? "apricot-green-hero.jpg" : (knownImages[tea.slug] || fallback);
   const imageVersion = image.startsWith("tea-photos/wellness/") ? "?v=2" : "";
-  return `<div class="${className}"><img src="assets/${image}${imageVersion}" data-fallback="assets/${fallback}" alt="${tea.name} loose-leaf tea" /></div>`;
+  const loading = detailView ? 'loading="eager" fetchpriority="high"' : 'loading="lazy" fetchpriority="auto"';
+  return `<div class="${className}"><img src="assets/${image}${imageVersion}" data-fallback="assets/${fallback}" alt="${tea.name} loose-leaf tea" decoding="async" ${loading} /></div>`;
 }
 
 document.addEventListener("error", event => {
